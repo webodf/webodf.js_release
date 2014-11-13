@@ -1,0 +1,19 @@
+{
+  "name": "webodf.js",
+  "description": "JavaScript Document Engine, for displaying and editing documents in the OpenDocument format",
+  "license": "AGPL-3.0",
+  "main": "webodf.js",
+  "ignore": [
+    "**/*.txt",
+    "docs",
+    "webodf-debug.js"
+  ],
+  "keywords": [
+    "OpenDocument", "ODF",
+    "Text", "Document", "Slides", "Presentation",
+    "ODT", "OTT", "FODT",
+    "ODP", "OTP", "FODP",
+    "Editor", "Viewer"
+  ],
+  "homepage": "http://webodf.org/"
+}
