@@ -75,35 +75,40 @@
 <span class='line'> 68</span> 
 <span class='line'> 69</span> </span><span class="WHIT">        </span><span class="NAME">odfContainer.setMetadata</span><span class="PUNC">(</span><span class="NAME">setProperties</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">removedPropertiesArray</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 70</span> 
-<span class='line'> 71</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 72</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 73</span> 
-<span class='line'> 74</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'> 75</span>      * @return {!ops.OpUpdateMetadata.Spec}
-<span class='line'> 76</span>      */</span><span class="WHIT">
-<span class='line'> 77</span> </span><span class="WHIT">    </span><span class="NAME">this.spec</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 78</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 79</span> </span><span class="WHIT">            </span><span class="NAME">optype</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"UpdateMetadata"</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 80</span> </span><span class="WHIT">            </span><span class="NAME">memberid</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">memberid</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 81</span> </span><span class="WHIT">            </span><span class="NAME">timestamp</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">timestamp</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 82</span> </span><span class="WHIT">            </span><span class="NAME">setProperties</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">setProperties</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 83</span> </span><span class="WHIT">            </span><span class="NAME">removedProperties</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">removedProperties</span><span class="WHIT">
-<span class='line'> 84</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 85</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 86</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 87</span> </span><span class="COMM">/**@typedef{{
-<span class='line'> 88</span>     optype:string,
-<span class='line'> 89</span>     memberid:string,
-<span class='line'> 90</span>     timestamp:number,
-<span class='line'> 91</span>     setProperties:Object,
-<span class='line'> 92</span>     removedProperties:?{attributes:string}
-<span class='line'> 93</span>  }}*/</span><span class="WHIT">
-<span class='line'> 94</span> </span><span class="NAME">ops.OpUpdateMetadata.Spec</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 95</span> </span><span class="COMM">/**@typedef{{
-<span class='line'> 96</span>     memberid:string,
-<span class='line'> 97</span>     timestamp:(number|undefined),
-<span class='line'> 98</span>     setProperties:Object,
-<span class='line'> 99</span>     removedProperties:?{attributes:string}
-<span class='line'>100</span>  }}*/</span><span class="WHIT">
-<span class='line'>101</span> </span><span class="NAME">ops.OpUpdateMetadata.InitSpec</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>102</span> </span></pre></body></html>
+<span class='line'> 71</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.emit</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalMetadataUpdated</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">            </span><span class="NAME">setProperties</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">setProperties</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">setProperties</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">            </span><span class="NAME">removedProperties</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">removedPropertiesArray</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">removedPropertiesArray</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 75</span> 
+<span class='line'> 76</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 78</span> 
+<span class='line'> 79</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'> 80</span>      * @return {!ops.OpUpdateMetadata.Spec}
+<span class='line'> 81</span>      */</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">    </span><span class="NAME">this.spec</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">            </span><span class="NAME">optype</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"UpdateMetadata"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">            </span><span class="NAME">memberid</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">memberid</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">            </span><span class="NAME">timestamp</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">timestamp</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">            </span><span class="NAME">setProperties</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">setProperties</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">            </span><span class="NAME">removedProperties</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">removedProperties</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="COMM">/**@typedef{{
+<span class='line'> 93</span>     optype:string,
+<span class='line'> 94</span>     memberid:string,
+<span class='line'> 95</span>     timestamp:number,
+<span class='line'> 96</span>     setProperties:Object,
+<span class='line'> 97</span>     removedProperties:?{attributes:string}
+<span class='line'> 98</span>  }}*/</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="NAME">ops.OpUpdateMetadata.Spec</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="COMM">/**@typedef{{
+<span class='line'>101</span>     memberid:string,
+<span class='line'>102</span>     timestamp:(number|undefined),
+<span class='line'>103</span>     setProperties:Object,
+<span class='line'>104</span>     removedProperties:?{attributes:string}
+<span class='line'>105</span>  }}*/</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="NAME">ops.OpUpdateMetadata.InitSpec</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span></pre></body></html>

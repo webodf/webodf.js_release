@@ -2,7 +2,7 @@
 
  This is a generated file. DO NOT EDIT.
 
- Copyright (C) 2010-2014 KO GmbH <copyright@kogmbh.com>
+ Copyright (C) 2010-2015 KO GmbH <copyright@kogmbh.com>
 
  @licstart
  The code in this file is free software: you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
  @source: http://www.webodf.org/
  @source: https://github.com/kogmbh/WebODF/
 */
-var webodf_version = "0.5.4";
+var webodf_version = "0.5.5";
 function Runtime() {
 }
 Runtime.prototype.getVariable = function(name) {
@@ -4931,7 +4931,7 @@ core.UnitTester = function UnitTester() {
   var self = this, failedTests = 0, logger = new core.UnitTestLogger, results = {}, inBrowser = runtime.type() === "BrowserRuntime";
   this.resourcePrefix = "";
   function link(text, code) {
-    return"<span style='color:blue;cursor:pointer' onclick='" + code + "'>" + text + "</span>"
+    return"<span style='color:blue;cursor:pointer' onclick='" + code + "'>" + text.replace(/</g, "&lt;") + "</span>"
   }
   this.reporter = function(r) {
     var i, m;
@@ -4961,7 +4961,7 @@ core.UnitTester = function UnitTester() {
     if(inBrowser) {
       runtime.log("<span>Running " + link(testName, 'runSuite("' + testName + '");') + ": " + test.description() + "</span>")
     }else {
-      runtime.log("Running " + testName + ": " + test.description)
+      runtime.log("Running " + testName + ": " + test.description())
     }
     tests = test.tests();
     for(i = 0;i < tests.length;i += 1) {
@@ -6433,7 +6433,7 @@ odf.StyleInfo = function StyleInfo() {
   en:"variable-set", ans:stylens, a:"data-style-name"}], "page-layout":[{ens:presentationns, en:"notes", ans:stylens, a:"page-layout-name"}, {ens:stylens, en:"handout-master", ans:stylens, a:"page-layout-name"}, {ens:stylens, en:"master-page", ans:stylens, a:"page-layout-name"}]}, elements, xpath = xmldom.XPath;
   function hasDerivedStyles(odfbody, nsResolver, styleElement) {
     var nodes, xp, styleName = styleElement.getAttributeNS(stylens, "name"), styleFamily = styleElement.getAttributeNS(stylens, "family");
-    xp = "//style:*[@style:parent-style-name='" + styleName + "'][@style:family='" + styleFamily + "']";
+    xp = '//style:*[@style:parent-style-name="' + styleName + '"][@style:family="' + styleFamily + '"]';
     nodes = xpath.getODFElementsWithXPath(odfbody, xp, nsResolver);
     if(nodes.length) {
       return true
@@ -9117,7 +9117,7 @@ odf.Style2CSS = function Style2CSS() {
       var selectors = [], rule;
       controlledFrameClasses.forEach(function(frameClass) {
         styleNames.forEach(function(styleName) {
-          selectors.push("draw|page[webodfhelper|page-style-name='" + styleName + "'] draw|frame[presentation|class='" + frameClass + "']")
+          selectors.push('draw|page[webodfhelper|page-style-name="' + styleName + '"] draw|frame[presentation|class="' + frameClass + '"]')
         })
       });
       if(selectors.length > 0) {
@@ -9201,8 +9201,8 @@ odf.Style2CSS = function Style2CSS() {
       while(e) {
         if(e.namespaceURI === stylens && (e.localName === "master-page" && e.getAttributeNS(stylens, "page-layout-name") === stylename)) {
           masterStyleName = e.getAttributeNS(stylens, "name");
-          contentLayoutRule = "draw|page[draw|master-page-name=" + masterStyleName + "] {" + rule + "}";
-          pageSizeRule = "office|body, draw|page[draw|master-page-name=" + masterStyleName + "] {" + applySimpleMapping(props, pageSizePropertySimpleMapping) + " }";
+          contentLayoutRule = 'draw|page[draw|master-page-name="' + masterStyleName + '"] {' + rule + "}";
+          pageSizeRule = 'office|body, draw|page[draw|master-page-name="' + masterStyleName + '"] {' + applySimpleMapping(props, pageSizePropertySimpleMapping) + " }";
           sheet.insertRule(contentLayoutRule, sheet.cssRules.length);
           sheet.insertRule(pageSizeRule, sheet.cssRules.length)
         }
@@ -10088,7 +10088,8 @@ ops.Canvas.prototype.getZoomHelper = function() {
     };
     function load(url) {
       loadingQueue.clearQueue();
-      element.innerHTML = runtime.tr("Loading") + " " + url + "...";
+      element.innerHTML = "";
+      element.appendChild(element.ownerDocument.createTextNode(runtime.tr("Loading") + url + "..."));
       element.removeAttribute("style");
       odfcontainer = new odf.OdfContainer(url, function(container) {
         odfcontainer = container;
@@ -10839,7 +10840,13 @@ ops.Operation.prototype.spec = function() {
 };
 ops.TextPositionFilter = function TextPositionFilter() {
   var odfUtils = odf.OdfUtils, ELEMENT_NODE = Node.ELEMENT_NODE, TEXT_NODE = Node.TEXT_NODE, FILTER_ACCEPT = core.PositionFilter.FilterResult.FILTER_ACCEPT, FILTER_REJECT = core.PositionFilter.FilterResult.FILTER_REJECT;
-  function checkLeftRight(container, leftNode, rightNode) {
+  function previousSibling(node, nodeFilter) {
+    while(node && nodeFilter(node) !== FILTER_ACCEPT) {
+      node = node.previousSibling
+    }
+    return node
+  }
+  function checkLeftRight(container, leftNode, rightNode, nodeFilter) {
     var r, firstPos, rightOfChar;
     if(leftNode) {
       if(odfUtils.isInlineRoot(leftNode) && odfUtils.isGroupingElement(rightNode)) {
@@ -10853,7 +10860,7 @@ ops.TextPositionFilter = function TextPositionFilter() {
         return FILTER_ACCEPT
       }
     }else {
-      if(odfUtils.isInlineRoot(container.previousSibling) && odfUtils.isGroupingElement(container)) {
+      if(odfUtils.isGroupingElement(container) && odfUtils.isInlineRoot(previousSibling(container.previousSibling, nodeFilter))) {
         return FILTER_ACCEPT
       }
     }
@@ -10912,14 +10919,14 @@ ops.TextPositionFilter = function TextPositionFilter() {
       leftNode = iterator.leftNode();
       rightNode = container;
       container = (container.parentNode);
-      r = checkLeftRight(container, leftNode, rightNode)
+      r = checkLeftRight(container, leftNode, rightNode, iterator.getNodeFilter())
     }else {
       if(!odfUtils.isGroupingElement(container)) {
         r = FILTER_REJECT
       }else {
         leftNode = iterator.leftNode();
         rightNode = iterator.rightNode();
-        r = checkLeftRight(container, leftNode, rightNode)
+        r = checkLeftRight(container, leftNode, rightNode, iterator.getNodeFilter())
       }
     }
     return r
@@ -10940,9 +10947,6 @@ ops.OdtDocument = function OdtDocument(odfCanvas) {
   }
   this.getDocumentElement = function() {
     return odfCanvas.odfContainer().rootElement
-  };
-  this.getDOMDocument = function() {
-    return(this.getDocumentElement().ownerDocument)
   };
   this.cloneDocumentElement = function() {
     var rootElement = self.getDocumentElement(), annotationViewManager = odfCanvas.getAnnotationViewManager(), initialDoc;
@@ -11099,18 +11103,11 @@ ops.OdtDocument = function OdtDocument(odfCanvas) {
     return{textNode:lastTextNode, offset:nodeOffset}
   }
   function handleOperationExecuted(op) {
-    var opspec = op.spec(), memberId = opspec.memberid, date = (new Date(opspec.timestamp)).toISOString(), odfContainer = odfCanvas.odfContainer(), changedMetadata = {setProperties:{}, removedProperties:[]}, fullName;
+    var opspec = op.spec(), memberId = opspec.memberid, date = (new Date(opspec.timestamp)).toISOString(), odfContainer = odfCanvas.odfContainer(), changedMetadata, fullName;
     if(op.isEdit) {
-      if(opspec.optype === "UpdateMetadata") {
-        changedMetadata.setProperties = (JSON.parse(JSON.stringify((opspec).setProperties)));
-        if((opspec).removedProperties) {
-          changedMetadata.removedProperties = (opspec).removedProperties.attributes.split(",")
-        }
-      }
       fullName = self.getMember(memberId).getProperties().fullName;
       odfContainer.setMetadata({"dc:creator":fullName, "dc:date":date}, null);
-      changedMetadata.setProperties["dc:creator"] = fullName;
-      changedMetadata.setProperties["dc:date"] = date;
+      changedMetadata = {setProperties:{"dc:creator":fullName, "dc:date":date}, removedProperties:[]};
       if(!lastEditingOp) {
         changedMetadata.setProperties["meta:editing-cycles"] = odfContainer.incrementEditingCycles();
         if(!unsupportedMetadataRemoved) {
@@ -12604,6 +12601,7 @@ ops.OpUpdateMetadata = function OpUpdateMetadata() {
       removedPropertiesArray = removedProperties.attributes.split(",")
     }
     odfContainer.setMetadata(setProperties, removedPropertiesArray);
+    odtDocument.emit(ops.OdtDocument.signalMetadataUpdated, {setProperties:setProperties !== null ? setProperties : {}, removedProperties:removedPropertiesArray !== null ? removedPropertiesArray : []});
     return true
   };
   this.spec = function() {
@@ -13901,7 +13899,11 @@ gui.HyperlinkClickHandler = function HyperlinkClickHandler(getContainer, keyDown
         bookmarks[0].scrollIntoView(true)
       }
     }else {
-      window.open(url)
+      if(/^\s*(javascript|data):/.test(url)) {
+        runtime.log("WARN:", "potentially malicious URL ignored")
+      }else {
+        window.open(url)
+      }
     }
     if(e.preventDefault) {
       e.preventDefault()
@@ -15503,9 +15505,14 @@ gui.UndoManager.prototype.moveBackward = function(states) {
 };
 gui.UndoManager.prototype.onOperationExecuted = function(op) {
 };
+gui.UndoManager.prototype.isDocumentModified = function() {
+};
+gui.UndoManager.prototype.setDocumentModified = function(modified) {
+};
 gui.UndoManager.signalUndoStackChanged = "undoStackChanged";
 gui.UndoManager.signalUndoStateCreated = "undoStateCreated";
 gui.UndoManager.signalUndoStateModified = "undoStateModified";
+gui.UndoManager.signalDocumentModifiedChanged = "documentModifiedChanged";
 gui.SessionControllerOptions = function() {
   this.directTextStylingEnabled = false;
   this.directParagraphStylingEnabled = false;
@@ -17316,167 +17323,242 @@ gui.UndoStateRules = function UndoStateRules() {
   }
   this.isPartOfOperationSet = isPartOfOperationSet
 };
-gui.TrivialUndoManager = function TrivialUndoManager(defaultRules) {
-  var self = this, cursorns = "urn:webodf:names:cursor", domUtils = core.DomUtils, initialDoc, initialState = [], playFunc, document, currentUndoState = [], undoStates = [], redoStates = [], eventNotifier = new core.EventNotifier([gui.UndoManager.signalUndoStackChanged, gui.UndoManager.signalUndoStateCreated, gui.UndoManager.signalUndoStateModified, gui.TrivialUndoManager.signalDocumentRootReplaced]), undoRules = defaultRules || new gui.UndoStateRules, isExecutingOps = false;
-  function executeOperations(operations) {
-    if(operations.length > 0) {
-      isExecutingOps = true;
-      playFunc(operations);
-      isExecutingOps = false
+(function() {
+  var stateIdBase = 0;
+  function StateId(mainId, subId) {
+    this.mainId = mainId !== undefined ? mainId : -1;
+    this.subId = subId !== undefined ? subId : -1
+  }
+  function StateTransition(undoRules, initialOps, editOpsPossible) {
+    var nextStateId, operations, editOpsCount;
+    this.addOperation = function(op) {
+      if(undoRules.isEditOperation(op)) {
+        editOpsCount += 1
+      }
+      operations.push(op)
+    };
+    this.isNextStateId = function(stateId) {
+      return stateId.mainId === nextStateId && stateId.subId === editOpsCount
+    };
+    this.getNextStateId = function() {
+      return new StateId(nextStateId, editOpsCount)
+    };
+    this.getOperations = function() {
+      return operations
+    };
+    function addEditOpsCount(count, op) {
+      return count + (undoRules.isEditOperation(op) ? 1 : 0)
     }
-  }
-  function emitStackChange() {
-    eventNotifier.emit(gui.UndoManager.signalUndoStackChanged, {undoAvailable:self.hasUndoStates(), redoAvailable:self.hasRedoStates()})
-  }
-  function mostRecentUndoState() {
-    return undoStates[undoStates.length - 1]
-  }
-  function completeCurrentUndoState() {
-    if(currentUndoState !== initialState && currentUndoState !== mostRecentUndoState()) {
-      undoStates.push(currentUndoState)
+    function init() {
+      stateIdBase += 1;
+      nextStateId = stateIdBase;
+      operations = initialOps || [];
+      editOpsCount = initialOps && editOpsPossible ? initialOps.reduce(addEditOpsCount, 0) : 0
     }
+    init()
   }
-  function removeNode(node) {
-    var sibling = node.previousSibling || node.nextSibling;
-    node.parentNode.removeChild(node);
-    domUtils.normalizeTextNodes(sibling)
-  }
-  function removeCursors(root) {
-    domUtils.getElementsByTagNameNS(root, cursorns, "cursor").forEach(removeNode);
-    domUtils.getElementsByTagNameNS(root, cursorns, "anchor").forEach(removeNode)
-  }
-  function values(obj) {
-    return Object.keys(obj).map(function(key) {
-      return obj[key]
-    })
-  }
-  function extractCursorStates(undoStates) {
-    var addCursor = {}, moveCursor = {}, requiredAddOps = {}, remainingAddOps, operations = undoStates.pop();
-    document.getMemberIds().forEach(function(memberid) {
-      requiredAddOps[memberid] = true
-    });
-    remainingAddOps = Object.keys(requiredAddOps).length;
-    function processOp(op) {
-      var spec = op.spec();
-      if(!requiredAddOps[spec.memberid]) {
+  gui.TrivialUndoManager = function TrivialUndoManager(defaultRules) {
+    var self = this, cursorns = "urn:webodf:names:cursor", domUtils = core.DomUtils, initialDoc, initialStateTransition, playFunc, document, unmodifiedStateId, currentUndoStateTransition, undoStateTransitions = [], redoStateTransitions = [], eventNotifier = new core.EventNotifier([gui.UndoManager.signalUndoStackChanged, gui.UndoManager.signalUndoStateCreated, gui.UndoManager.signalUndoStateModified, gui.UndoManager.signalDocumentModifiedChanged, gui.TrivialUndoManager.signalDocumentRootReplaced]), 
+    undoRules = defaultRules || new gui.UndoStateRules, isExecutingOps = false;
+    function isModified() {
+      return currentUndoStateTransition.isNextStateId(unmodifiedStateId) !== true
+    }
+    function executeOperations(stateTransition) {
+      var operations = stateTransition.getOperations();
+      if(operations.length > 0) {
+        isExecutingOps = true;
+        playFunc(operations);
+        isExecutingOps = false
+      }
+    }
+    function emitStackChange() {
+      eventNotifier.emit(gui.UndoManager.signalUndoStackChanged, {undoAvailable:self.hasUndoStates(), redoAvailable:self.hasRedoStates()})
+    }
+    function emitDocumentModifiedChange(oldModified) {
+      var newModified = isModified();
+      if(oldModified !== newModified) {
+        eventNotifier.emit(gui.UndoManager.signalDocumentModifiedChanged, newModified)
+      }
+    }
+    function mostRecentUndoStateTransition() {
+      return undoStateTransitions[undoStateTransitions.length - 1]
+    }
+    function completeCurrentUndoState() {
+      if(currentUndoStateTransition !== initialStateTransition && currentUndoStateTransition !== mostRecentUndoStateTransition()) {
+        undoStateTransitions.push(currentUndoStateTransition)
+      }
+    }
+    function removeNode(node) {
+      var sibling = node.previousSibling || node.nextSibling;
+      node.parentNode.removeChild(node);
+      domUtils.normalizeTextNodes(sibling)
+    }
+    function removeCursors(root) {
+      domUtils.getElementsByTagNameNS(root, cursorns, "cursor").forEach(removeNode);
+      domUtils.getElementsByTagNameNS(root, cursorns, "anchor").forEach(removeNode)
+    }
+    function values(obj) {
+      return Object.keys(obj).map(function(key) {
+        return obj[key]
+      })
+    }
+    function extractCursorStates(undoStateTransitions) {
+      var addCursor = {}, moveCursor = {}, requiredAddOps = {}, remainingAddOps, ops, stateTransition = undoStateTransitions.pop();
+      document.getMemberIds().forEach(function(memberid) {
+        requiredAddOps[memberid] = true
+      });
+      remainingAddOps = Object.keys(requiredAddOps).length;
+      function processOp(op) {
+        var spec = op.spec();
+        if(!requiredAddOps[spec.memberid]) {
+          return
+        }
+        switch(spec.optype) {
+          case "AddCursor":
+            if(!addCursor[spec.memberid]) {
+              addCursor[spec.memberid] = op;
+              delete requiredAddOps[spec.memberid];
+              remainingAddOps -= 1
+            }
+            break;
+          case "MoveCursor":
+            if(!moveCursor[spec.memberid]) {
+              moveCursor[spec.memberid] = op
+            }
+            break
+        }
+      }
+      while(stateTransition && remainingAddOps > 0) {
+        ops = stateTransition.getOperations();
+        ops.reverse();
+        ops.forEach(processOp);
+        stateTransition = undoStateTransitions.pop()
+      }
+      return new StateTransition(undoRules, values(addCursor).concat(values(moveCursor)))
+    }
+    this.subscribe = function(signal, callback) {
+      eventNotifier.subscribe(signal, callback)
+    };
+    this.unsubscribe = function(signal, callback) {
+      eventNotifier.unsubscribe(signal, callback)
+    };
+    this.isDocumentModified = isModified;
+    this.setDocumentModified = function(modified) {
+      if(isModified() === modified) {
         return
       }
-      switch(spec.optype) {
-        case "AddCursor":
-          if(!addCursor[spec.memberid]) {
-            addCursor[spec.memberid] = op;
-            delete requiredAddOps[spec.memberid];
-            remainingAddOps -= 1
-          }
-          break;
-        case "MoveCursor":
-          if(!moveCursor[spec.memberid]) {
-            moveCursor[spec.memberid] = op
-          }
-          break
+      if(modified) {
+        unmodifiedStateId = new StateId
+      }else {
+        unmodifiedStateId = currentUndoStateTransition.getNextStateId()
       }
-    }
-    while(operations && remainingAddOps > 0) {
-      operations.reverse();
-      operations.forEach(processOp);
-      operations = undoStates.pop()
-    }
-    return values(addCursor).concat(values(moveCursor))
-  }
-  this.subscribe = function(signal, callback) {
-    eventNotifier.subscribe(signal, callback)
-  };
-  this.unsubscribe = function(signal, callback) {
-    eventNotifier.unsubscribe(signal, callback)
-  };
-  this.hasUndoStates = function() {
-    return undoStates.length > 0
-  };
-  this.hasRedoStates = function() {
-    return redoStates.length > 0
-  };
-  this.setDocument = function(newDocument) {
-    document = newDocument
-  };
-  this.purgeInitialState = function() {
-    undoStates.length = 0;
-    redoStates.length = 0;
-    initialState.length = 0;
-    currentUndoState.length = 0;
-    initialDoc = null;
-    emitStackChange()
-  };
-  function setInitialState() {
-    initialDoc = document.cloneDocumentElement();
-    removeCursors(initialDoc);
-    completeCurrentUndoState();
-    currentUndoState = initialState = extractCursorStates([initialState].concat(undoStates));
-    undoStates.length = 0;
-    redoStates.length = 0;
-    emitStackChange()
-  }
-  this.setInitialState = setInitialState;
-  this.initialize = function() {
-    if(!initialDoc) {
-      setInitialState()
-    }
-  };
-  this.setPlaybackFunction = function(playback_func) {
-    playFunc = playback_func
-  };
-  this.onOperationExecuted = function(op) {
-    if(isExecutingOps) {
-      return
-    }
-    if(undoRules.isEditOperation(op) && (currentUndoState === initialState || redoStates.length > 0) || !undoRules.isPartOfOperationSet(op, currentUndoState)) {
-      redoStates.length = 0;
+      eventNotifier.emit(gui.UndoManager.signalDocumentModifiedChanged, modified)
+    };
+    this.hasUndoStates = function() {
+      return undoStateTransitions.length > 0
+    };
+    this.hasRedoStates = function() {
+      return redoStateTransitions.length > 0
+    };
+    this.setDocument = function(newDocument) {
+      document = newDocument
+    };
+    this.purgeInitialState = function() {
+      var oldModified = isModified();
+      undoStateTransitions.length = 0;
+      redoStateTransitions.length = 0;
+      currentUndoStateTransition = initialStateTransition = new StateTransition(undoRules);
+      unmodifiedStateId = currentUndoStateTransition.getNextStateId();
+      initialDoc = null;
+      emitStackChange();
+      emitDocumentModifiedChange(oldModified)
+    };
+    function setInitialState() {
+      var oldModified = isModified();
+      initialDoc = document.cloneDocumentElement();
+      removeCursors(initialDoc);
       completeCurrentUndoState();
-      currentUndoState = [op];
-      undoStates.push(currentUndoState);
-      eventNotifier.emit(gui.UndoManager.signalUndoStateCreated, {operations:currentUndoState});
-      emitStackChange()
-    }else {
-      currentUndoState.push(op);
-      eventNotifier.emit(gui.UndoManager.signalUndoStateModified, {operations:currentUndoState})
+      currentUndoStateTransition = initialStateTransition = extractCursorStates([initialStateTransition].concat(undoStateTransitions));
+      undoStateTransitions.length = 0;
+      redoStateTransitions.length = 0;
+      if(!oldModified) {
+        unmodifiedStateId = currentUndoStateTransition.getNextStateId()
+      }
+      emitStackChange();
+      emitDocumentModifiedChange(oldModified)
     }
+    this.setInitialState = setInitialState;
+    this.initialize = function() {
+      if(!initialDoc) {
+        setInitialState()
+      }
+    };
+    this.setPlaybackFunction = function(playback_func) {
+      playFunc = playback_func
+    };
+    this.onOperationExecuted = function(op) {
+      if(isExecutingOps) {
+        return
+      }
+      var oldModified = isModified();
+      if(undoRules.isEditOperation(op) && (currentUndoStateTransition === initialStateTransition || redoStateTransitions.length > 0) || !undoRules.isPartOfOperationSet(op, currentUndoStateTransition.getOperations())) {
+        redoStateTransitions.length = 0;
+        completeCurrentUndoState();
+        currentUndoStateTransition = new StateTransition(undoRules, [op], true);
+        undoStateTransitions.push(currentUndoStateTransition);
+        eventNotifier.emit(gui.UndoManager.signalUndoStateCreated, {operations:currentUndoStateTransition.getOperations()});
+        emitStackChange()
+      }else {
+        currentUndoStateTransition.addOperation(op);
+        eventNotifier.emit(gui.UndoManager.signalUndoStateModified, {operations:currentUndoStateTransition.getOperations()})
+      }
+      emitDocumentModifiedChange(oldModified)
+    };
+    this.moveForward = function(states) {
+      var moved = 0, oldModified = isModified(), redoOperations;
+      while(states && redoStateTransitions.length) {
+        redoOperations = redoStateTransitions.pop();
+        undoStateTransitions.push(redoOperations);
+        executeOperations(redoOperations);
+        states -= 1;
+        moved += 1
+      }
+      if(moved) {
+        currentUndoStateTransition = mostRecentUndoStateTransition();
+        emitStackChange();
+        emitDocumentModifiedChange(oldModified)
+      }
+      return moved
+    };
+    this.moveBackward = function(states) {
+      var moved = 0, oldModified = isModified();
+      while(states && undoStateTransitions.length) {
+        redoStateTransitions.push(undoStateTransitions.pop());
+        states -= 1;
+        moved += 1
+      }
+      if(moved) {
+        document.getMemberIds().forEach(function(memberid) {
+          document.removeCursor(memberid)
+        });
+        document.setDocumentElement((initialDoc.cloneNode(true)));
+        eventNotifier.emit(gui.TrivialUndoManager.signalDocumentRootReplaced, {});
+        executeOperations(initialStateTransition);
+        undoStateTransitions.forEach(executeOperations);
+        currentUndoStateTransition = mostRecentUndoStateTransition() || initialStateTransition;
+        emitStackChange();
+        emitDocumentModifiedChange(oldModified)
+      }
+      return moved
+    };
+    function init() {
+      currentUndoStateTransition = initialStateTransition = new StateTransition(undoRules);
+      unmodifiedStateId = currentUndoStateTransition.getNextStateId()
+    }
+    init()
   };
-  this.moveForward = function(states) {
-    var moved = 0, redoOperations;
-    while(states && redoStates.length) {
-      redoOperations = redoStates.pop();
-      undoStates.push(redoOperations);
-      executeOperations(redoOperations);
-      states -= 1;
-      moved += 1
-    }
-    if(moved) {
-      currentUndoState = mostRecentUndoState();
-      emitStackChange()
-    }
-    return moved
-  };
-  this.moveBackward = function(states) {
-    var moved = 0;
-    while(states && undoStates.length) {
-      redoStates.push(undoStates.pop());
-      states -= 1;
-      moved += 1
-    }
-    if(moved) {
-      document.getMemberIds().forEach(function(memberid) {
-        document.removeCursor(memberid)
-      });
-      document.setDocumentElement((initialDoc.cloneNode(true)));
-      eventNotifier.emit(gui.TrivialUndoManager.signalDocumentRootReplaced, {});
-      executeOperations(initialState);
-      undoStates.forEach(executeOperations);
-      currentUndoState = mostRecentUndoState() || initialState;
-      emitStackChange()
-    }
-    return moved
-  }
-};
-gui.TrivialUndoManager.signalDocumentRootReplaced = "documentRootReplaced";
+  gui.TrivialUndoManager.signalDocumentRootReplaced = "documentRootReplaced"
+})();
 odf.GraphicProperties = function(element, styleParseUtils, parent) {
   var self = this, stylens = odf.Namespaces.stylens, svgns = odf.Namespaces.svgns, getter;
   getter = {verticalPos:function() {
@@ -18122,7 +18204,7 @@ ops.OperationTransformMatrix = function OperationTransformMatrix() {
     return false
   }
   function dropOverruledAndUnneededProperties(minorSet, minorRem, majorSet, majorRem, propertiesName) {
-    var minorSP = minorSet ? minorSet[propertiesName] : null, minorRP = minorRem ? minorRem[propertiesName] : null, majorSP = majorSet ? majorSet[propertiesName] : null, majorRP = majorRem ? majorRem[propertiesName] : null, result;
+    var minorSP = (minorSet ? minorSet[propertiesName] : null), minorRP = minorRem ? minorRem[propertiesName] : null, majorSP = (majorSet ? majorSet[propertiesName] : null), majorRP = majorRem ? majorRem[propertiesName] : null, result;
     result = dropOverruledAndUnneededAttributes(minorSP, minorRP, majorSP, majorRP);
     if(minorSP && !hasProperties(minorSP)) {
       delete minorSet[propertiesName]

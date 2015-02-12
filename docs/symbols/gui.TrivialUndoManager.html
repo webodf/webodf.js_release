@@ -611,6 +611,16 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
+								<b><a href="../symbols/gui.TrivialUndoManager.html#isDocumentModified">isDocumentModified</a></b>
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
 								<b><a href="../symbols/gui.TrivialUndoManager.html#setInitialState">setInitialState</a></b>
 								</div>
 								<div class="description"></div>
@@ -653,23 +663,32 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-completeCurrentUndoState">completeCurrentUndoState</a></b>()
 								</div>
-								<div class="description">Pushes the currentUndoState into the undoStates if necessary</div>
+								<div class="description">Pushes the currentUndoStateTransition into the undoStateTransitions if necessary</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-executeOperations">executeOperations</a></b>(operations)
+								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-emitDocumentModifiedChange">emitDocumentModifiedChange</a></b>(oldModified)
 								</div>
-								<div class="description">Execute all operations in the supplied array</div>
+								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-extractCursorStates">extractCursorStates</a></b>(undoStates)
+								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-executeOperations">executeOperations</a></b>(stateTransition)
+								</div>
+								<div class="description">Execute all operations in the supplied state transition</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;inner&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-extractCursorStates">extractCursorStates</a></b>(undoStateTransitions)
 								</div>
 								<div class="description">Reduce the provided undo states to just unique AddCursor followed by
 MoveCursor commands for each still-present cursor.</div>
@@ -706,7 +725,16 @@ MoveCursor commands for each still-present cursor.</div>
 						<tr>
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-mostRecentUndoState">mostRecentUndoState</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-isModified">isModified</a></b>()
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;inner&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#-mostRecentUndoStateTransition">mostRecentUndoStateTransition</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
@@ -772,6 +800,15 @@ MoveCursor commands for each still-present cursor.</div>
 								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#setDocument">setDocument</a></b>(newDocument)
 								</div>
 								<div class="description">Set the OdtDocument to operate on</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/gui.TrivialUndoManager.html#setDocumentModified">setDocumentModified</a></b>(modified)
+								</div>
+								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -867,6 +904,28 @@ MoveCursor commands for each still-present cursor.</div>
 					Field Detail
 				</div>
 				
+					<a name="isDocumentModified"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{!boolean}</span>
+					<b>isDocumentModified</b>
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="setInitialState"> </a>
 					<div class="fixedFont">
 					
@@ -927,7 +986,7 @@ MoveCursor commands for each still-present cursor.</div>
 					
 					</div>
 					<div class="description">
-						Pushes the currentUndoState into the undoStates if necessary
+						Pushes the currentUndoStateTransition into the undoStateTransitions if necessary
 						
 						
 					</div>
@@ -944,15 +1003,15 @@ MoveCursor commands for each still-present cursor.</div>
 
 					<hr />
 				
-					<a name="-executeOperations"> </a>
+					<a name="-emitDocumentModifiedChange"> </a>
 					<div class="fixedFont">&lt;inner&gt; 
 					
 					<span class="light">{undefined}</span>
-					<b>executeOperations</b>(operations)
+					<b>emitDocumentModifiedChange</b>(oldModified)
 					
 					</div>
 					<div class="description">
-						Execute all operations in the supplied array
+						
 						
 						
 					</div>
@@ -964,7 +1023,50 @@ MoveCursor commands for each still-present cursor.</div>
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{!Array.<!ops.Operation>}</span> <b>operations</b>
+									<span class="light fixedFont">{!boolean}</span> <b>oldModified</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{undefined}</span> </dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="-executeOperations"> </a>
+					<div class="fixedFont">&lt;inner&gt; 
+					
+					<span class="light">{undefined}</span>
+					<b>executeOperations</b>(stateTransition)
+					
+					</div>
+					<div class="description">
+						Execute all operations in the supplied state transition
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{!StateTransition}</span> <b>stateTransition</b>
 									
 								</dt>
 								<dd></dd>
@@ -990,8 +1092,8 @@ MoveCursor commands for each still-present cursor.</div>
 					<a name="-extractCursorStates"> </a>
 					<div class="fixedFont">&lt;inner&gt; 
 					
-					<span class="light">{!Array.<!ops.Operation>}</span>
-					<b>extractCursorStates</b>(undoStates)
+					<span class="light">{!StateTransition}</span>
+					<b>extractCursorStates</b>(undoStateTransitions)
 					
 					</div>
 					<div class="description">
@@ -1009,7 +1111,7 @@ restoring the original document state at the start of an undo step
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{!Array.<Array.<!ops.Operation>>}</span> <b>undoStates</b>
+									<span class="light fixedFont">{!Array.<!StateTransition>}</span> <b>undoStateTransitions</b>
 									
 								</dt>
 								<dd></dd>
@@ -1023,7 +1125,7 @@ restoring the original document state at the start of an undo step
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{!Array.<!ops.Operation>}</span> </dd>
+								<dd><span class="light fixedFont">{!StateTransition}</span> </dd>
 							
 							</dl>
 						
@@ -1121,11 +1223,11 @@ restoring the original document state at the start of an undo step
 
 					<hr />
 				
-					<a name="-mostRecentUndoState"> </a>
+					<a name="-isModified"> </a>
 					<div class="fixedFont">&lt;inner&gt; 
 					
-					<span class="light">{!Array.<!ops.Operation>}</span>
-					<b>mostRecentUndoState</b>()
+					<span class="light">{!boolean}</span>
+					<b>isModified</b>()
 					
 					</div>
 					<div class="description">
@@ -1144,7 +1246,39 @@ restoring the original document state at the start of an undo step
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{!Array.<!ops.Operation>}</span> </dd>
+								<dd><span class="light fixedFont">{!boolean}</span> </dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="-mostRecentUndoStateTransition"> </a>
+					<div class="fixedFont">&lt;inner&gt; 
+					
+					<span class="light">{!StateTransition}</span>
+					<b>mostRecentUndoStateTransition</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{!StateTransition}</span> </dd>
 							
 							</dl>
 						
@@ -1417,6 +1551,49 @@ states is reached, or no more redo states are available.
 
 					<hr />
 				
+					<a name="setDocumentModified"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{undefined}</span>
+					<b>setDocumentModified</b>(modified)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{!boolean}</span> <b>modified</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{undefined}</span> </dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
 					<a name="setPlaybackFunction"> </a>
 					<div class="fixedFont">
 					
@@ -1592,7 +1769,7 @@ states is reached, or no more redo states are available.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Sep 17 2014 17:15:01 GMT+0200 (MESZ)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Feb 12 2015 17:39:50 GMT+0100 (MEZ)
 		</div>
 	</body>
 </html>

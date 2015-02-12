@@ -117,7 +117,22 @@
 <span class='line'>110</span>  */</span><span class="WHIT">
 <span class='line'>111</span> </span><span class="NAME">gui.UndoManager.prototype.onOperationExecuted</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">op</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>112</span> 
-<span class='line'>113</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalUndoStackChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"undoStackChanged"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>114</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalUndoStateCreated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"undoStateCreated"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>115</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalUndoStateModified</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"undoStateModified"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>116</span> </span></pre></body></html>
+<span class='line'>113</span> </span><span class="COMM">/**
+<span class='line'>114</span>  * Returns if the current state matches the unmodified state.
+<span class='line'>115</span>  * @return {!boolean}
+<span class='line'>116</span>  */</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="NAME">gui.UndoManager.prototype.isDocumentModified</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>118</span> 
+<span class='line'>119</span> </span><span class="COMM">/**
+<span class='line'>120</span>  * Sets the current state of the document to be either the unmodified state
+<span class='line'>121</span>  * or a modified state.
+<span class='line'>122</span>  * @param {!boolean} modified
+<span class='line'>123</span>  * @return {undefined}
+<span class='line'>124</span>  */</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="NAME">gui.UndoManager.prototype.setDocumentModified</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">modified</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>126</span> 
+<span class='line'>127</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalUndoStackChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"undoStackChanged"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalUndoStateCreated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"undoStateCreated"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalUndoStateModified</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"undoStateModified"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.UndoManager.signalDocumentModifiedChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"documentModifiedChanged"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>131</span> </span></pre></body></html>
