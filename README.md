@@ -6,7 +6,7 @@ It makes it easy to add Open Document Format (ODF) support to your website and t
 
 * Visit the project homepage at: [WebODF](http://webodf.org)
 * Want some live demos? Visit: [WebODF Demos](http://webodf.org/demos/)
-* Get in contact, by the [mailing list](https://lists.opendocsociety.org/mailman/listinfo/webodf) or IRC (#webodf auf freenode, [Web access](http://webchat.freenode.net/?nick=webodfcurious_gh&channels=webodf))
+* Get in contact, by the [mailing list](https://lists.opendocsociety.org/mailman/listinfo/webodf) or IRC (#webodf auf freenode, [Web access](http://webchat.freenode.net/?nick=webodfjscurious_ghr&channels=webodf))
 
 ### License
 
@@ -23,8 +23,8 @@ This repository is explicitely done for dependency managers and package managers
 It only contains the files of builds created from released versions of WebODF, so
 they can be directly deployed by those managers.
 
-At the moment this repository supports
-* [Bower](http://bower.io/)
+Currently supported by this repository:
+* [Bower](http://bower.io/), registered in the central Bower registry by: "webodf.js"
 
 We are looking forward to support other managers as well, help welcome.
 
