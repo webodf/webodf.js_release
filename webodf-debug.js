@@ -40,7 +40,7 @@
  @source: http://www.webodf.org/
  @source: https://github.com/kogmbh/WebODF/
 */
-var webodf_version = "0.5.5";
+var webodf_version = "0.5.6";
 function Runtime() {
 }
 Runtime.prototype.getVariable = function(name) {
@@ -103,8 +103,13 @@ Runtime.byteArrayToString = function(bytearray, encoding) {
     return s
   }
   function utf8ByteArrayToString(bytearray) {
-    var s = "", i, l = bytearray.length, chars = [], c0, c1, c2, c3, codepoint;
-    for(i = 0;i < l;i += 1) {
+    var s = "", startPos, i, l = bytearray.length, chars = [], c0, c1, c2, c3, codepoint;
+    if(l >= 3 && (bytearray[0] === 239 && (bytearray[1] === 187 && bytearray[2] === 191))) {
+      startPos = 3
+    }else {
+      startPos = 0
+    }
+    for(i = startPos;i < l;i += 1) {
       c0 = (bytearray[i]);
       if(c0 < 128) {
         chars.push(c0)
@@ -174,7 +179,7 @@ Runtime.assert = function(condition, message) {
     throw new Error(message);
   }
 };
-function BrowserRuntime(logoutput) {
+function BrowserRuntime() {
   var self = this;
   function getUtf8LengthForString(string) {
     var l = string.length, i, n, j = 0;
@@ -264,34 +269,13 @@ function BrowserRuntime(logoutput) {
   this.fromJson = Runtime.fromJson;
   this.toJson = Runtime.toJson;
   function log(msgOrCategory, msg) {
-    var node, doc, category;
+    var category;
     if(msg !== undefined) {
       category = msgOrCategory
     }else {
       msg = msgOrCategory
     }
-    if(logoutput) {
-      doc = logoutput.ownerDocument;
-      if(category) {
-        node = doc.createElement("span");
-        node.className = category;
-        node.appendChild(doc.createTextNode(category));
-        logoutput.appendChild(node);
-        logoutput.appendChild(doc.createTextNode(" "))
-      }
-      node = doc.createElement("span");
-      if(msg.length > 0 && msg[0] === "<") {
-        node.innerHTML = msg
-      }else {
-        node.appendChild(doc.createTextNode(msg))
-      }
-      logoutput.appendChild(node);
-      logoutput.appendChild(doc.createElement("br"))
-    }else {
-      if(console) {
-        console.log(msg)
-      }
-    }
+    console.log(msg);
     if(self.enableAlerts && category === "alert") {
       alert(msg)
     }
@@ -859,7 +843,7 @@ function RhinoRuntime() {
 Runtime.create = function create() {
   var result;
   if(String(typeof window) !== "undefined") {
-    result = new BrowserRuntime(window.document.getElementById("logoutput"))
+    result = new BrowserRuntime
   }else {
     if(String(typeof require) !== "undefined") {
       result = new NodeJSRuntime
@@ -1712,6 +1696,11 @@ core.CSSUnits = function CSSUnits() {
       return parent
     }
     this.removeUnwantedNodes = removeUnwantedNodes;
+    this.removeAllChildNodes = function(node) {
+      while(node.firstChild) {
+        node.removeChild(node.firstChild)
+      }
+    };
     function getElementsByTagNameNS(node, namespace, tagName) {
       var e = [], list, i, l;
       list = node.getElementsByTagNameNS(namespace, tagName);
@@ -4621,419 +4610,6 @@ core.StepIterator = function StepIterator(filter, iterator) {
 core.StepIterator.StepSnapshot = function(container, offset) {
   this.container = container;
   this.offset = offset
-};
-core.TestData;
-core.AsyncTestData;
-core.UnitTest = function UnitTest() {
-};
-core.UnitTest.prototype.setUp = function() {
-};
-core.UnitTest.prototype.tearDown = function() {
-};
-core.UnitTest.prototype.description = function() {
-};
-core.UnitTest.prototype.tests = function() {
-};
-core.UnitTest.prototype.asyncTests = function() {
-};
-core.UnitTest.provideTestAreaDiv = function() {
-  var maindoc = runtime.getWindow().document, testarea = maindoc.getElementById("testarea");
-  runtime.assert(!testarea, 'Unclean test environment, found a div with id "testarea".');
-  testarea = maindoc.createElement("div");
-  testarea.setAttribute("id", "testarea");
-  maindoc.body.appendChild(testarea);
-  return(testarea)
-};
-core.UnitTest.cleanupTestAreaDiv = function() {
-  var maindoc = runtime.getWindow().document, testarea = maindoc.getElementById("testarea");
-  runtime.assert(!!testarea && testarea.parentNode === maindoc.body, 'Test environment broken, found no div with id "testarea" below body.');
-  maindoc.body.removeChild(testarea)
-};
-core.UnitTest.createXmlDocument = function(rootElementName, xmlBodyString, namespaceMap) {
-  var xmlDoc = "<?xml version='1.0' encoding='UTF-8'?>";
-  xmlDoc += "<" + rootElementName;
-  Object.keys(namespaceMap).forEach(function(key) {
-    xmlDoc += " xmlns:" + key + '="' + namespaceMap[key] + '"'
-  });
-  xmlDoc += ">";
-  xmlDoc += xmlBodyString;
-  xmlDoc += "</" + rootElementName + ">";
-  return runtime.parseXML(xmlDoc)
-};
-core.UnitTest.createOdtDocument = function(xml, namespaceMap) {
-  return core.UnitTest.createXmlDocument("office:document", xml, namespaceMap)
-};
-core.UnitTestLogger = function UnitTestLogger() {
-  var messages = [], errors = 0, start = 0, suite = "", test = "";
-  this.startTest = function(suiteName, testName) {
-    messages = [];
-    errors = 0;
-    suite = suiteName;
-    test = testName;
-    start = Date.now()
-  };
-  this.endTest = function() {
-    var end = Date.now();
-    return{description:test, suite:[suite, test], success:errors === 0, log:messages, time:end - start}
-  };
-  this.debug = function(msg) {
-    messages.push({category:"debug", message:msg})
-  };
-  this.fail = function(msg) {
-    errors += 1;
-    messages.push({category:"fail", message:msg})
-  };
-  this.pass = function(msg) {
-    messages.push({category:"pass", message:msg})
-  }
-};
-core.UnitTestRunner = function UnitTestRunner(resourcePrefix, logger) {
-  var failedTests = 0, failedTestsOnBeginExpectFail, areObjectsEqual, expectFail = false;
-  this.resourcePrefix = function() {
-    return resourcePrefix
-  };
-  this.beginExpectFail = function() {
-    failedTestsOnBeginExpectFail = failedTests;
-    expectFail = true
-  };
-  this.endExpectFail = function() {
-    var hasNoFailedTests = failedTestsOnBeginExpectFail === failedTests;
-    expectFail = false;
-    failedTests = failedTestsOnBeginExpectFail;
-    if(hasNoFailedTests) {
-      failedTests += 1;
-      logger.fail("Expected at least one failed test, but none registered.")
-    }
-  };
-  function debug(msg) {
-    logger.debug(msg)
-  }
-  function testFailed(msg) {
-    failedTests += 1;
-    if(!expectFail) {
-      logger.fail(msg)
-    }else {
-      logger.debug(msg)
-    }
-  }
-  function testPassed(msg) {
-    logger.pass(msg)
-  }
-  function areArraysEqual(a, b) {
-    var i;
-    try {
-      if(a.length !== b.length) {
-        testFailed("array of length " + a.length + " should be " + b.length + " long");
-        return false
-      }
-      for(i = 0;i < a.length;i += 1) {
-        if(a[i] !== b[i]) {
-          testFailed(a[i] + " should be " + b[i] + " at array index " + i);
-          return false
-        }
-      }
-    }catch(ex) {
-      return false
-    }
-    return true
-  }
-  function areAttributesEqual(a, b, skipReverseCheck) {
-    var aatts = a.attributes, n = aatts.length, i, att, v;
-    for(i = 0;i < n;i += 1) {
-      att = (aatts.item(i));
-      if(att.prefix !== "xmlns" && att.namespaceURI !== "urn:webodf:names:steps") {
-        v = b.getAttributeNS(att.namespaceURI, att.localName);
-        if(!b.hasAttributeNS(att.namespaceURI, att.localName)) {
-          testFailed("Attribute " + att.localName + " with value " + att.value + " was not present");
-          return false
-        }
-        if(v !== att.value) {
-          testFailed("Attribute " + att.localName + " was " + v + " should be " + att.value);
-          return false
-        }
-      }
-    }
-    return skipReverseCheck ? true : areAttributesEqual(b, a, true)
-  }
-  function areNodesEqual(a, b) {
-    var an, bn, atype = a.nodeType, btype = b.nodeType;
-    if(atype !== btype) {
-      testFailed("Nodetype '" + atype + "' should be '" + btype + "'");
-      return false
-    }
-    if(atype === Node.TEXT_NODE) {
-      if((a).data === (b).data) {
-        return true
-      }
-      testFailed("Textnode data '" + (a).data + "' should be '" + (b).data + "'");
-      return false
-    }
-    runtime.assert(atype === Node.ELEMENT_NODE, "Only textnodes and elements supported.");
-    if(a.namespaceURI !== b.namespaceURI) {
-      testFailed("namespace '" + a.namespaceURI + "' should be '" + b.namespaceURI + "'");
-      return false
-    }
-    if(a.localName !== b.localName) {
-      testFailed("localName '" + a.localName + "' should be '" + b.localName + "'");
-      return false
-    }
-    if(!areAttributesEqual((a), (b), false)) {
-      return false
-    }
-    an = a.firstChild;
-    bn = b.firstChild;
-    while(an) {
-      if(!bn) {
-        testFailed("Nodetype '" + an.nodeType + "' is unexpected here.");
-        return false
-      }
-      if(!areNodesEqual(an, bn)) {
-        return false
-      }
-      an = an.nextSibling;
-      bn = bn.nextSibling
-    }
-    if(bn) {
-      testFailed("Nodetype '" + bn.nodeType + "' is missing here.");
-      return false
-    }
-    return true
-  }
-  function isResultCorrect(actual, expected, absoluteTolerance) {
-    var diff;
-    if(expected === 0) {
-      return actual === expected && 1 / actual === 1 / expected
-    }
-    if(actual === expected) {
-      return true
-    }
-    if(actual === null || expected === null) {
-      return false
-    }
-    if(typeof expected === "number" && isNaN(expected)) {
-      return typeof actual === "number" && isNaN(actual)
-    }
-    if(typeof expected === "number" && typeof actual === "number") {
-      if(actual === expected) {
-        return true
-      }
-      if(absoluteTolerance === undefined) {
-        absoluteTolerance = 1E-4
-      }
-      runtime.assert(typeof absoluteTolerance === "number", "Absolute tolerance not given as number.");
-      runtime.assert(absoluteTolerance >= 0, "Absolute tolerance should be given as positive number, was " + absoluteTolerance);
-      diff = Math.abs(actual - expected);
-      return diff <= absoluteTolerance
-    }
-    if(Object.prototype.toString.call(expected) === Object.prototype.toString.call([])) {
-      return areArraysEqual((actual), (expected))
-    }
-    if(typeof expected === "object" && typeof actual === "object") {
-      if((expected).constructor === Element || (expected).constructor === Node) {
-        return areNodesEqual((actual), (expected))
-      }
-      return areObjectsEqual((actual), (expected))
-    }
-    return false
-  }
-  function stringify(v) {
-    if(v === 0 && 1 / v < 0) {
-      return"-0"
-    }
-    if(typeof v === "object") {
-      try {
-        return JSON.stringify(v)
-      }catch(ignore) {
-      }
-    }
-    return String(v)
-  }
-  function shouldBe(t, a, b, absoluteTolerance) {
-    if(typeof a !== "string" || typeof b !== "string") {
-      debug("WARN: shouldBe() expects string arguments")
-    }
-    var exception, av, bv;
-    try {
-      av = eval(a)
-    }catch(e) {
-      exception = e
-    }
-    bv = eval(b);
-    if(exception) {
-      testFailed(a + " should be " + bv + ". Threw exception " + exception)
-    }else {
-      if(isResultCorrect(av, bv, absoluteTolerance)) {
-        testPassed(a + " is " + b)
-      }else {
-        if(String(typeof av) === String(typeof bv)) {
-          testFailed(a + " should be " + stringify(bv) + ". Was " + stringify(av) + ".")
-        }else {
-          testFailed(a + " should be " + bv + " (of type " + typeof bv + "). Was " + av + " (of type " + typeof av + ").")
-        }
-      }
-    }
-  }
-  function shouldBeNonNull(t, a) {
-    var exception, av;
-    try {
-      av = eval(a)
-    }catch(e) {
-      exception = e
-    }
-    if(exception) {
-      testFailed(a + " should be non-null. Threw exception " + exception)
-    }else {
-      if(av !== null) {
-        testPassed(a + " is non-null.")
-      }else {
-        testFailed(a + " should be non-null. Was " + av)
-      }
-    }
-  }
-  function shouldBeNull(t, a) {
-    shouldBe(t, a, "null")
-  }
-  areObjectsEqual = function(a, b) {
-    var akeys = Object.keys(a), bkeys = Object.keys(b);
-    akeys.sort();
-    bkeys.sort();
-    return areArraysEqual(akeys, bkeys) && Object.keys(a).every(function(key) {
-      var aval = a[key], bval = b[key];
-      if(!isResultCorrect(aval, bval)) {
-        testFailed(aval + " should be " + bval + " for key " + key);
-        return false
-      }
-      return true
-    })
-  };
-  this.areNodesEqual = areNodesEqual;
-  this.shouldBeNull = shouldBeNull;
-  this.shouldBeNonNull = shouldBeNonNull;
-  this.shouldBe = shouldBe;
-  this.testFailed = testFailed;
-  this.countFailedTests = function() {
-    return failedTests
-  };
-  this.name = function(functions) {
-    var i, fname, nf = [], l = functions.length;
-    nf.length = l;
-    for(i = 0;i < l;i += 1) {
-      fname = Runtime.getFunctionName(functions[i]) || "";
-      if(fname === "") {
-        throw"Found a function without a name.";
-      }
-      nf[i] = {f:functions[i], name:fname}
-    }
-    return nf
-  }
-};
-core.UnitTester = function UnitTester() {
-  var self = this, failedTests = 0, logger = new core.UnitTestLogger, results = {}, inBrowser = runtime.type() === "BrowserRuntime";
-  this.resourcePrefix = "";
-  function link(text, code) {
-    return"<span style='color:blue;cursor:pointer' onclick='" + code + "'>" + text.replace(/</g, "&lt;") + "</span>"
-  }
-  this.reporter = function(r) {
-    var i, m;
-    if(inBrowser) {
-      runtime.log("<span>Running " + link(r.description, 'runTest("' + r.suite[0] + '","' + r.description + '")') + "</span>")
-    }else {
-      runtime.log("Running " + r.description)
-    }
-    if(!r.success) {
-      for(i = 0;i < r.log.length;i += 1) {
-        m = r.log[i];
-        runtime.log(m.category, m.message)
-      }
-    }
-  };
-  function report(r) {
-    if(self.reporter) {
-      self.reporter(r)
-    }
-  }
-  this.runTests = function(TestClass, callback, testNames) {
-    var testName = Runtime.getFunctionName(TestClass) || "", tname, runner = new core.UnitTestRunner(self.resourcePrefix, logger), test = new TestClass(runner), testResults = {}, i, t, tests, texpectFail, lastFailCount;
-    if(results.hasOwnProperty(testName)) {
-      runtime.log("Test " + testName + " has already run.");
-      return
-    }
-    if(inBrowser) {
-      runtime.log("<span>Running " + link(testName, 'runSuite("' + testName + '");') + ": " + test.description() + "</span>")
-    }else {
-      runtime.log("Running " + testName + ": " + test.description())
-    }
-    tests = test.tests();
-    for(i = 0;i < tests.length;i += 1) {
-      t = tests[i].f;
-      tname = tests[i].name;
-      texpectFail = tests[i].expectFail === true;
-      if(testNames.length && testNames.indexOf(tname) === -1) {
-        continue
-      }
-      lastFailCount = runner.countFailedTests();
-      test.setUp();
-      logger.startTest(testName, tname);
-      if(texpectFail) {
-        runner.beginExpectFail()
-      }
-      try {
-        t()
-      }catch(e) {
-        runner.testFailed("Unexpected exception encountered: " + e.toString() + "\n" + e.stack)
-      }
-      if(texpectFail) {
-        runner.endExpectFail()
-      }
-      report(logger.endTest());
-      test.tearDown();
-      testResults[tname] = lastFailCount === runner.countFailedTests()
-    }
-    function runAsyncTests(todo) {
-      var fname, expectFail;
-      if(todo.length === 0) {
-        results[testName] = testResults;
-        failedTests += runner.countFailedTests();
-        callback();
-        return
-      }
-      function tearDownAndRunNext() {
-        if(expectFail) {
-          runner.endExpectFail()
-        }
-        report(logger.endTest());
-        test.tearDown();
-        testResults[fname] = lastFailCount === runner.countFailedTests();
-        runAsyncTests(todo.slice(1))
-      }
-      t = todo[0].f;
-      fname = todo[0].name;
-      expectFail = todo[0].expectFail === true;
-      lastFailCount = runner.countFailedTests();
-      if(testNames.length && testNames.indexOf(fname) === -1) {
-        runAsyncTests(todo.slice(1))
-      }else {
-        test.setUp();
-        logger.startTest(testName, fname);
-        if(expectFail) {
-          runner.beginExpectFail()
-        }
-        try {
-          t(tearDownAndRunNext)
-        }catch(e) {
-          runner.testFailed("Unexpected exception encountered: " + e.toString() + "\n" + e.stack);
-          tearDownAndRunNext()
-        }
-      }
-    }
-    runAsyncTests(test.asyncTests())
-  };
-  this.failedTestsCount = function() {
-    return failedTests
-  };
-  this.results = function() {
-    return results
-  }
 };
 core.Utils = function Utils() {
   function hashString(value) {
@@ -9557,11 +9133,6 @@ ops.Canvas.prototype.getZoomHelper = function() {
     }
   }
   var drawns = odf.Namespaces.drawns, fons = odf.Namespaces.fons, officens = odf.Namespaces.officens, stylens = odf.Namespaces.stylens, svgns = odf.Namespaces.svgns, tablens = odf.Namespaces.tablens, textns = odf.Namespaces.textns, xlinkns = odf.Namespaces.xlinkns, presentationns = odf.Namespaces.presentationns, webodfhelperns = "urn:webodf:names:helper", xpath = xmldom.XPath, domUtils = core.DomUtils;
-  function clear(element) {
-    while(element.firstChild) {
-      element.removeChild(element.firstChild)
-    }
-  }
   function clearCSSStyleSheet(style) {
     var stylesheet = (style.sheet), cssRules = stylesheet.cssRules;
     while(cssRules.length) {
@@ -9604,7 +9175,7 @@ ops.Canvas.prototype.getZoomHelper = function() {
     var i, containerList, document = rootElement.ownerDocument, e;
     containerList = domUtils.getElementsByTagNameNS(rootElement, ns, localName);
     for(i = 0;i < containerList.length;i += 1) {
-      clear(containerList[i]);
+      domUtils.removeAllChildNodes(containerList[i]);
       if(value) {
         e = (containerList[i]);
         e.appendChild(document.createTextNode(value))
@@ -9722,9 +9293,7 @@ ops.Canvas.prototype.getZoomHelper = function() {
     var spaces, doc = odffragment.ownerDocument;
     function expandSpaceElement(space) {
       var j, count;
-      while(space.firstChild) {
-        space.removeChild(space.firstChild)
-      }
+      domUtils.removeAllChildNodes(space);
       space.appendChild(doc.createTextNode(" "));
       count = parseInt(space.getAttributeNS(textns, "c"), 10);
       if(count > 1) {
@@ -9988,7 +9557,7 @@ ops.Canvas.prototype.getZoomHelper = function() {
     }
     function handleContent(container, odfnode) {
       var css = (positioncss.sheet);
-      clear(element);
+      domUtils.removeAllChildNodes(element);
       sizer = (doc.createElementNS(element.namespaceURI, "div"));
       sizer.style.display = "inline-block";
       sizer.style.background = "white";
@@ -10043,7 +9612,7 @@ ops.Canvas.prototype.getZoomHelper = function() {
         clearCSSStyleSheet(fontcss);
         clearCSSStyleSheet(stylesxmlcss);
         clearCSSStyleSheet(positioncss);
-        clear(element);
+        domUtils.removeAllChildNodes(element);
         element.style.display = "inline-block";
         var odfnode = odfcontainer.rootElement;
         element.ownerDocument.importNode(odfnode, true);
@@ -10088,7 +9657,7 @@ ops.Canvas.prototype.getZoomHelper = function() {
     };
     function load(url) {
       loadingQueue.clearQueue();
-      element.innerHTML = "";
+      domUtils.removeAllChildNodes(element);
       element.appendChild(element.ownerDocument.createTextNode(runtime.tr("Loading") + url + "..."));
       element.removeAttribute("style");
       odfcontainer = new odf.OdfContainer(url, function(container) {
@@ -10700,8 +10269,8 @@ ops.OdtCursor.signalCursorUpdated = "cursorUpdated";
   }
 })();
 (function() {
-  ops.OdtStepsTranslator = function OdtStepsTranslator(getRootNode, newIterator, filter, bucketSize) {
-    var rootNode, stepsCache, odfUtils = odf.OdfUtils, domUtils = core.DomUtils, iterator, FILTER_ACCEPT = core.PositionFilter.FilterResult.FILTER_ACCEPT, PREVIOUS = core.StepDirection.PREVIOUS, NEXT = core.StepDirection.NEXT;
+  ops.OdtStepsTranslator = function OdtStepsTranslator(rootNode, iterator, filter, bucketSize) {
+    var stepsCache, odfUtils = odf.OdfUtils, domUtils = core.DomUtils, FILTER_ACCEPT = core.PositionFilter.FilterResult.FILTER_ACCEPT, PREVIOUS = core.StepDirection.PREVIOUS, NEXT = core.StepDirection.NEXT;
     function updateCache(steps, iterator, isStep) {
       var node = iterator.getCurrentNode();
       if(iterator.isBeforeNode() && odfUtils.isParagraph(node)) {
@@ -10720,17 +10289,6 @@ ops.OdtCursor.signalCursorUpdated = "cursorUpdated";
         updateCache(steps - 1, iterator, false)
       }while(iterator.nextPosition())
     }
-    function verifyRootNode() {
-      var currentRootNode = getRootNode();
-      if(currentRootNode !== rootNode) {
-        if(rootNode) {
-          runtime.log("Undo detected. Resetting steps cache")
-        }
-        rootNode = currentRootNode;
-        stepsCache = new ops.StepsCache(rootNode, bucketSize, roundUpToStep);
-        iterator = newIterator(rootNode)
-      }
-    }
     this.convertStepsToDomPoint = function(steps) {
       var stepsFromRoot, isStep;
       if(isNaN(steps)) {
@@ -10739,7 +10297,6 @@ ops.OdtCursor.signalCursorUpdated = "cursorUpdated";
       if(steps < 0) {
         throw new RangeError("Requested steps is negative (" + steps + ")");
       }
-      verifyRootNode();
       stepsFromRoot = stepsCache.setToClosestStep(steps, iterator);
       while(stepsFromRoot < steps && iterator.nextPosition()) {
         isStep = filter.acceptPosition(iterator) === FILTER_ACCEPT;
@@ -10777,7 +10334,6 @@ ops.OdtCursor.signalCursorUpdated = "cursorUpdated";
     }
     this.convertDomPointToSteps = function(node, offset, roundDirection) {
       var stepsFromRoot, beforeRoot, destinationNode, destinationOffset, rounding = 0, isStep;
-      verifyRootNode();
       if(!domUtils.containsNode(rootNode, node)) {
         beforeRoot = domUtils.comparePoints(rootNode, 0, node, offset) < 0;
         node = (rootNode);
@@ -10804,7 +10360,6 @@ ops.OdtCursor.signalCursorUpdated = "cursorUpdated";
     };
     this.prime = function() {
       var stepsFromRoot, isStep;
-      verifyRootNode();
       stepsFromRoot = stepsCache.setToClosestStep(0, iterator);
       while(iterator.nextPosition()) {
         isStep = filter.acceptPosition(iterator) === FILTER_ACCEPT;
@@ -10815,15 +10370,13 @@ ops.OdtCursor.signalCursorUpdated = "cursorUpdated";
       }
     };
     this.handleStepsInserted = function(eventArgs) {
-      verifyRootNode();
       stepsCache.damageCacheAfterStep(eventArgs.position)
     };
     this.handleStepsRemoved = function(eventArgs) {
-      verifyRootNode();
       stepsCache.damageCacheAfterStep(eventArgs.position - 1)
     };
     function init() {
-      verifyRootNode()
+      stepsCache = new ops.StepsCache(rootNode, bucketSize, roundUpToStep)
     }
     init()
   }
@@ -10958,10 +10511,16 @@ ops.OdtDocument = function OdtDocument(odfCanvas) {
     return initialDoc
   };
   this.setDocumentElement = function(documentElement) {
-    var odfContainer = odfCanvas.odfContainer();
+    var odfContainer = odfCanvas.odfContainer(), rootNode;
+    eventNotifier.unsubscribe(ops.OdtDocument.signalStepsInserted, stepsTranslator.handleStepsInserted);
+    eventNotifier.unsubscribe(ops.OdtDocument.signalStepsRemoved, stepsTranslator.handleStepsRemoved);
     odfContainer.setRootElement(documentElement);
     odfCanvas.setOdfContainer(odfContainer, true);
-    odfCanvas.refreshCSS()
+    odfCanvas.refreshCSS();
+    rootNode = getRootNode();
+    stepsTranslator = new ops.OdtStepsTranslator(rootNode, createPositionIterator(rootNode), filter, 500);
+    eventNotifier.subscribe(ops.OdtDocument.signalStepsInserted, stepsTranslator.handleStepsInserted);
+    eventNotifier.subscribe(ops.OdtDocument.signalStepsRemoved, stepsTranslator.handleStepsRemoved)
   };
   function getDOMDocument() {
     return(self.getDocumentElement().ownerDocument)
@@ -11316,9 +10875,10 @@ ops.OdtDocument = function OdtDocument(odfCanvas) {
     callback()
   };
   function init() {
+    var rootNode = getRootNode();
     filter = new ops.TextPositionFilter;
     stepUtils = new odf.StepUtils;
-    stepsTranslator = new ops.OdtStepsTranslator(getRootNode, createPositionIterator, filter, 500);
+    stepsTranslator = new ops.OdtStepsTranslator(rootNode, createPositionIterator(rootNode), filter, 500);
     eventNotifier.subscribe(ops.OdtDocument.signalStepsInserted, stepsTranslator.handleStepsInserted);
     eventNotifier.subscribe(ops.OdtDocument.signalStepsRemoved, stepsTranslator.handleStepsRemoved);
     eventNotifier.subscribe(ops.OdtDocument.signalOperationEnd, handleOperationExecuted);
@@ -16238,7 +15798,7 @@ gui.EditInfoHandle = function EditInfoHandle(parentElement) {
   var edits = [], handle, document = (parentElement.ownerDocument), htmlns = document.documentElement.namespaceURI, editinfons = "urn:webodf:names:editinfo";
   function renderEdits() {
     var i, infoDiv, colorSpan, authorSpan, timeSpan;
-    handle.innerHTML = "";
+    core.DomUtils.removeAllChildNodes(handle);
     for(i = 0;i < edits.length;i += 1) {
       infoDiv = document.createElementNS(htmlns, "div");
       infoDiv.className = "editInfo";
@@ -16251,7 +15811,7 @@ gui.EditInfoHandle = function EditInfoHandle(parentElement) {
       timeSpan = document.createElementNS(htmlns, "span");
       timeSpan.className = "editInfoTime";
       timeSpan.setAttributeNS(editinfons, "editinfo:memberid", edits[i].memberid);
-      timeSpan.innerHTML = edits[i].time;
+      timeSpan.appendChild(document.createTextNode(edits[i].time.toString()));
       infoDiv.appendChild(colorSpan);
       infoDiv.appendChild(authorSpan);
       infoDiv.appendChild(timeSpan);
@@ -16823,8 +16383,8 @@ gui.SessionViewOptions = function() {
     }
     function processConstraints() {
       var localMemberName, cssString, localMember;
-      if(annotationConstraintStyles.innerHTML !== "") {
-        annotationConstraintStyles.innerHTML = ""
+      if(annotationConstraintStyles.hasChildNodes()) {
+        core.DomUtils.removeAllChildNodes(annotationConstraintStyles)
       }
       if(sessionConstraints.getState(gui.CommonConstraints.EDIT.ANNOTATIONS.ONLY_DELETE_OWN) === true) {
         localMember = session.getOdtDocument().getMember(localMemberId);
