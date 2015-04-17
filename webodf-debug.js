@@ -40,7 +40,7 @@
  @source: http://www.webodf.org/
  @source: https://github.com/kogmbh/WebODF/
 */
-var webodf_version = "0.5.6";
+var webodf_version = "0.5.7";
 function Runtime() {
 }
 Runtime.prototype.getVariable = function(name) {
@@ -1683,14 +1683,17 @@ core.CSSUnits = function CSSUnits() {
       return parent
     }
     this.mergeIntoParent = mergeIntoParent;
-    function removeUnwantedNodes(targetNode, shouldRemove) {
-      var parent = targetNode.parentNode, node = targetNode.firstChild, next;
+    function removeUnwantedNodes(targetNode, nodeFilter) {
+      var parent = targetNode.parentNode, node = targetNode.firstChild, filterResult = nodeFilter(targetNode), next;
+      if(filterResult === NodeFilter.FILTER_SKIP) {
+        return parent
+      }
       while(node) {
         next = node.nextSibling;
-        removeUnwantedNodes(node, shouldRemove);
+        removeUnwantedNodes(node, nodeFilter);
         node = next
       }
-      if(parent && shouldRemove(targetNode)) {
+      if(parent && filterResult === NodeFilter.FILTER_REJECT) {
         mergeIntoParent(targetNode)
       }
       return parent
@@ -7341,6 +7344,8 @@ gui.AnnotationViewManager = function AnnotationViewManager(canvas, odfFragment, 
       }else {
         annotationNote.style.top = "0px"
       }
+    }else {
+      annotationNote.style.top = "0px"
     }
     connectorAngular.style.left = connectorHorizontal.getBoundingClientRect().width / zoomLevel + "px";
     connectorAngular.style.width = lineDistance({x:connectorAngular.getBoundingClientRect().left / zoomLevel, y:connectorAngular.getBoundingClientRect().top / zoomLevel}, {x:annotationNote.getBoundingClientRect().left / zoomLevel, y:annotationNote.getBoundingClientRect().top / zoomLevel}) + "px";
@@ -7389,17 +7394,22 @@ gui.AnnotationViewManager = function AnnotationViewManager(canvas, odfFragment, 
     return null
   }
   this.getMinimumHeightForAnnotationPane = getMinimumHeightForAnnotationPane;
-  function addAnnotation(annotation) {
-    showAnnotationsPane(true);
-    annotations.push(annotation);
-    sortAnnotations();
-    wrapAnnotation(annotation);
-    if(annotation.annotationEndElement) {
-      highlightAnnotation(annotation)
+  function addAnnotations(annotationElements) {
+    if(annotationElements.length === 0) {
+      return
     }
+    showAnnotationsPane(true);
+    annotationElements.forEach(function(annotation) {
+      annotations.push(annotation);
+      wrapAnnotation(annotation);
+      if(annotation.annotationEndElement) {
+        highlightAnnotation(annotation)
+      }
+    });
+    sortAnnotations();
     rerenderAnnotations()
   }
-  this.addAnnotation = addAnnotation;
+  this.addAnnotations = addAnnotations;
   function forgetAnnotation(annotation) {
     var index = annotations.indexOf(annotation);
     unwrapAnnotation(annotation);
@@ -7411,6 +7421,7 @@ gui.AnnotationViewManager = function AnnotationViewManager(canvas, odfFragment, 
       showAnnotationsPane(false)
     }
   }
+  this.forgetAnnotation = forgetAnnotation;
   function forgetAnnotations() {
     while(annotations.length) {
       forgetAnnotation(annotations[0])
@@ -7693,7 +7704,7 @@ odf.Formatting = function Formatting() {
   };
   function buildStyleChain(node, collectedChains) {
     var parent = (node.nodeType === Node.TEXT_NODE ? node.parentNode : node), nodeStyles, appliedStyles = [], chainKey = "", foundContainer = false;
-    while(parent) {
+    while(parent && (!odfUtils.isInlineRoot(parent) && parent.parentNode !== odfContainer.rootElement)) {
       if(!foundContainer && odfUtils.isGroupingElement(parent)) {
         foundContainer = true
       }
@@ -9583,12 +9594,8 @@ ops.Canvas.prototype.getZoomHelper = function() {
       sizer.insertBefore(shadowContent, sizer.firstChild);
       zoomHelper.setZoomableElement(sizer)
     }
-    function modifyAnnotations(odffragment) {
-      var annotationNodes = (domUtils.getElementsByTagNameNS(odffragment, officens, "annotation"));
-      annotationNodes.forEach(annotationViewManager.addAnnotation);
-      annotationViewManager.rerenderAnnotations()
-    }
     function handleAnnotations(odfnode) {
+      var annotationNodes;
       if(allowAnnotations) {
         if(!annotationsPane.parentNode) {
           sizer.appendChild(annotationsPane)
@@ -9597,7 +9604,8 @@ ops.Canvas.prototype.getZoomHelper = function() {
           annotationViewManager.forgetAnnotations()
         }
         annotationViewManager = new gui.AnnotationViewManager(self, odfnode.body, annotationsPane, showAnnotationRemoveButton);
-        modifyAnnotations(odfnode.body);
+        annotationNodes = (domUtils.getElementsByTagNameNS(odfnode.body, officens, "annotation"));
+        annotationViewManager.addAnnotations(annotationNodes);
         fixContainerSize()
       }else {
         if(annotationsPane.parentNode) {
@@ -9709,13 +9717,13 @@ ops.Canvas.prototype.getZoomHelper = function() {
     };
     this.addAnnotation = function(annotation) {
       if(annotationViewManager) {
-        annotationViewManager.addAnnotation(annotation);
+        annotationViewManager.addAnnotations([annotation]);
         fixContainerSize()
       }
     };
-    this.forgetAnnotations = function() {
+    this.forgetAnnotation = function(annotation) {
       if(annotationViewManager) {
-        annotationViewManager.forgetAnnotations();
+        annotationViewManager.forgetAnnotation(annotation);
         fixContainerSize()
       }
     };
@@ -10508,6 +10516,7 @@ ops.OdtDocument = function OdtDocument(odfCanvas) {
     }
     initialDoc = rootElement.cloneNode(true);
     odfCanvas.refreshAnnotations();
+    self.fixCursorPositions();
     return initialDoc
   };
   this.setDocumentElement = function(documentElement) {
@@ -10906,7 +10915,7 @@ ops.OpAddAnnotation = function OpAddAnnotation() {
     memberid = data.memberid;
     timestamp = parseInt(data.timestamp, 10);
     position = parseInt(data.position, 10);
-    length = parseInt(data.length, 10) || 0;
+    length = data.length !== undefined ? parseInt(data.length, 10) || 0 : undefined;
     name = data.name
   };
   this.isEdit = true;
@@ -10954,7 +10963,7 @@ ops.OpAddAnnotation = function OpAddAnnotation() {
     var odtDocument = (document), annotation, annotationEnd, cursor = odtDocument.getCursor(memberid), selectedRange, paragraphElement;
     doc = odtDocument.getDOMDocument();
     annotation = createAnnotationNode(odtDocument, new Date(timestamp));
-    if(length) {
+    if(length !== undefined) {
       annotationEnd = createAnnotationEnd();
       annotation.annotationEndElement = annotationEnd;
       insertNodeAtPosition(odtDocument, annotationEnd, position + length)
@@ -11577,8 +11586,9 @@ ops.OpInsertText.Spec;
 ops.OpInsertText.InitSpec;
 odf.CollapsingRules = function CollapsingRules(rootNode) {
   var odfUtils = odf.OdfUtils, domUtils = core.DomUtils;
-  function shouldRemove(node) {
-    return odfUtils.isODFNode(node) || (node.localName === "br" && odfUtils.isLineBreak(node.parentNode) || node.nodeType === Node.TEXT_NODE && odfUtils.isODFNode((node.parentNode)))
+  function filterOdfNodesToRemove(node) {
+    var isToRemove = odfUtils.isODFNode(node) || (node.localName === "br" && odfUtils.isLineBreak(node.parentNode) || node.nodeType === Node.TEXT_NODE && odfUtils.isODFNode((node.parentNode)));
+    return isToRemove ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
   }
   function isCollapsibleContainer(node) {
     return!odfUtils.isParagraph(node) && (node !== rootNode && odfUtils.hasNoODFContent(node))
@@ -11589,7 +11599,7 @@ odf.CollapsingRules = function CollapsingRules(rootNode) {
       parent = targetNode.parentNode;
       parent.removeChild(targetNode)
     }else {
-      parent = domUtils.removeUnwantedNodes(targetNode, shouldRemove)
+      parent = domUtils.removeUnwantedNodes(targetNode, filterOdfNodesToRemove)
     }
     if(parent && isCollapsibleContainer(parent)) {
       return mergeChildrenIntoParent(parent)
@@ -11610,8 +11620,11 @@ ops.OpMergeParagraph = function OpMergeParagraph() {
   };
   this.isEdit = true;
   this.group = undefined;
-  function isEmptyGroupingElement(element) {
-    return odfUtils.isGroupingElement(element) && odfUtils.hasNoODFContent(element)
+  function filterEmptyGroupingElementToRemove(element) {
+    if(odf.OdfUtils.isInlineRoot(element)) {
+      return NodeFilter.FILTER_SKIP
+    }
+    return odfUtils.isGroupingElement(element) && odfUtils.hasNoODFContent(element) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
   }
   function mergeParagraphs(destination, source) {
     var child;
@@ -11621,7 +11634,7 @@ ops.OpMergeParagraph = function OpMergeParagraph() {
         source.removeChild(child)
       }else {
         destination.appendChild(child);
-        domUtils.removeUnwantedNodes(child, isEmptyGroupingElement)
+        domUtils.removeUnwantedNodes(child, filterEmptyGroupingElementToRemove)
       }
       child = source.firstChild
     }
@@ -11768,7 +11781,7 @@ ops.OpRemoveAnnotation = function OpRemoveAnnotation() {
     }
     annotationNode = (container);
     annotationEnd = annotationNode.annotationEndElement;
-    odtDocument.getOdfCanvas().forgetAnnotations();
+    odtDocument.getOdfCanvas().forgetAnnotation(annotationNode);
     function insert(node) {
       (annotationNode).parentNode.insertBefore(node, annotationNode)
     }
@@ -11779,8 +11792,8 @@ ops.OpRemoveAnnotation = function OpRemoveAnnotation() {
       annotationEnd.parentNode.removeChild(annotationEnd)
     }
     odtDocument.emit(ops.OdtDocument.signalStepsRemoved, {position:position > 0 ? position - 1 : position});
+    odtDocument.getOdfCanvas().rerenderAnnotations();
     odtDocument.fixCursorPositions();
-    odtDocument.getOdfCanvas().refreshAnnotations();
     return true
   };
   this.spec = function() {
@@ -12406,8 +12419,12 @@ gui.AnnotationController = function AnnotationController(session, sessionConstra
     if(!isAnnotatable) {
       return
     }
-    position = length >= 0 ? position : position + length;
-    length = Math.abs(length);
+    if(length === 0) {
+      length = undefined
+    }else {
+      position = length >= 0 ? position : position + length;
+      length = Math.abs(length)
+    }
     op.init({memberid:inputMemberId, position:position, length:length, name:inputMemberId + Date.now()});
     session.enqueue([op])
   };

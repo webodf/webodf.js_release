@@ -41,7 +41,7 @@
 <span class='line'> 34</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">memberid</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">timestamp</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'> 35</span> </span><span class="WHIT">        </span><span class="COMM">/**@type{number}*/</span><span class="WHIT">
 <span class='line'> 36</span> </span><span class="WHIT">        </span><span class="NAME">position</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'> 37</span> </span><span class="WHIT">        </span><span class="COMM">/**@type{number}*/</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">        </span><span class="COMM">/**@type{!number|undefined}*/</span><span class="WHIT">
 <span class='line'> 38</span> </span><span class="WHIT">        </span><span class="NAME">length</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'> 39</span> </span><span class="WHIT">        </span><span class="COMM">/**@type{string}*/</span><span class="WHIT">
 <span class='line'> 40</span> </span><span class="WHIT">        </span><span class="NAME">name</span><span class="PUNC">,</span><span class="WHIT">
@@ -55,7 +55,7 @@
 <span class='line'> 48</span> </span><span class="WHIT">        </span><span class="NAME">memberid</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">data.memberid</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 49</span> </span><span class="WHIT">        </span><span class="NAME">timestamp</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">data.timestamp</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">10</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 50</span> </span><span class="WHIT">        </span><span class="NAME">position</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">data.position</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">10</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 51</span> </span><span class="WHIT">        </span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">data.length</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">10</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">        </span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">data.length</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">data.length</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">10</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 52</span> </span><span class="WHIT">        </span><span class="NAME">name</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">data.name</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 53</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 54</span> 
@@ -156,7 +156,7 @@
 <span class='line'>149</span> 
 <span class='line'>150</span> </span><span class="WHIT">        </span><span class="NAME">annotation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">createAnnotationNode</span><span class="PUNC">(</span><span class="NAME">odtDocument</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Date</span><span class="PUNC">(</span><span class="NAME">timestamp</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>151</span> 
-<span class='line'>152</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">length</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>153</span> </span><span class="WHIT">            </span><span class="NAME">annotationEnd</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">createAnnotationEnd</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>154</span> </span><span class="WHIT">            </span><span class="COMM">// link annotation end to start</span><span class="WHIT">
 <span class='line'>155</span> </span><span class="WHIT">            </span><span class="NAME">annotation.annotationEndElement</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">annotationEnd</span><span class="PUNC">;</span><span class="WHIT">
@@ -204,7 +204,7 @@
 <span class='line'>197</span>     memberid:string,
 <span class='line'>198</span>     timestamp:number,
 <span class='line'>199</span>     position:number,
-<span class='line'>200</span>     length:number,
+<span class='line'>200</span>     length:(!number|undefined),
 <span class='line'>201</span>     name:string
 <span class='line'>202</span> }}*/</span><span class="WHIT">
 <span class='line'>203</span> </span><span class="NAME">ops.OpAddAnnotation.Spec</span><span class="PUNC">;</span><span class="WHIT">
@@ -212,7 +212,7 @@
 <span class='line'>205</span>     memberid:string,
 <span class='line'>206</span>     timestamp:(number|undefined),
 <span class='line'>207</span>     position:number,
-<span class='line'>208</span>     length:number,
+<span class='line'>208</span>     length:(!number|undefined),
 <span class='line'>209</span>     name:string
 <span class='line'>210</span> }}*/</span><span class="WHIT">
 <span class='line'>211</span> </span><span class="NAME">ops.OpAddAnnotation.InitSpec</span><span class="PUNC">;</span><span class="WHIT">
