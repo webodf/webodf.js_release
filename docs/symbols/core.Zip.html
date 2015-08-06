@@ -197,10 +197,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/core.Base64.html">core.Base64</a></li>
 	
-	<li><a href="../symbols/core.ByteArray.html">core.ByteArray</a></li>
-	
-	<li><a href="../symbols/core.ByteArrayWriter.html">core.ByteArrayWriter</a></li>
-	
 	<li><a href="../symbols/core.CSSUnits.html">core.CSSUnits</a></li>
 	
 	<li><a href="../symbols/core.Cursor.html">core.Cursor</a></li>
@@ -234,8 +230,6 @@ ul.inheritsList
 	<li><a href="../symbols/core.Utils.html">core.Utils</a></li>
 	
 	<li><a href="../symbols/core.Zip.html">core.Zip</a></li>
-	
-	<li><a href="../symbols/core.Zip-ZipEntry.html">core.Zip-ZipEntry</a></li>
 	
 	<li><a href="../symbols/createXPathSingleton-AllChildElementIterator.html">createXPathSingleton-AllChildElementIterator</a></li>
 	
@@ -455,8 +449,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ops.OdtDocument.html">ops.OdtDocument</a></li>
 	
-	<li><a href="../symbols/ops.OdtDocument-RootFilter.html">ops.OdtDocument-RootFilter</a></li>
-	
 	<li><a href="../symbols/ops.OdtStepsTranslator.html">ops.OdtStepsTranslator</a></li>
 	
 	<li><a href="../symbols/ops.OpAddAnnotation.html">ops.OpAddAnnotation</a></li>
@@ -526,6 +518,8 @@ ul.inheritsList
 	<li><a href="../symbols/ops.TrivialOperationRouter.html">ops.TrivialOperationRouter</a></li>
 	
 	<li><a href="../symbols/RhinoRuntime.html">RhinoRuntime</a></li>
+	
+	<li><a href="../symbols/RootFilter.html">RootFilter</a></li>
 	
 	<li><a href="../symbols/Runtime.html">Runtime</a></li>
 	
@@ -607,15 +601,6 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-crc32">crc32</a></b>(data)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-createByteArray">createByteArray</a></b>(successCallback, errorCallback)
 								</div>
 								<div class="description">Create a bytearray from the zipfile.</div>
@@ -623,36 +608,9 @@ ul.inheritsList
 						</tr>
 					
 						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
+							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-date2DosTime">date2DosTime</a></b>(date)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-dosTime2Date">dosTime2Date</a></b>(dostime)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-handleCentralDirectory">handleCentralDirectory</a></b>(data, callback)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-handleCentralDirectoryEnd">handleCentralDirectoryEnd</a></b>(data, callback)
+								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#getEntries">getEntries</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
@@ -662,15 +620,6 @@ ul.inheritsList
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-load">load</a></b>(filename, callback)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-loadAllEntries">loadAllEntries</a></b>(position, callback)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -715,15 +664,6 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-read">read</a></b>(offset, length, callback)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-remove">remove</a></b>(filename)
 								</div>
 								<div class="description">Removes entry from the zip.</div>
@@ -754,24 +694,6 @@ ul.inheritsList
 								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-writeAs">writeAs</a></b>(newurl, callback)
 								</div>
 								<div class="description">Write the zipfile to the given path.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-writeCODEntry">writeCODEntry</a></b>(entry, offset)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/core.Zip.html#-writeEntry">writeEntry</a></b>(entry)
-								</div>
-								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -843,49 +765,6 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="-crc32"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{!number}</span>
-					<b>crc32</b>(data)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!Uint8Array}</span> <b>data</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{!number}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
 					<a name="-createByteArray"> </a>
 					<div class="fixedFont">&lt;inner&gt; 
 					
@@ -935,54 +814,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="-date2DosTime"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
+					<a name="getEntries"> </a>
+					<div class="fixedFont">
 					
-					<span class="light">{!number}</span>
-					<b>date2DosTime</b>(date)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!Date}</span> <b>date</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{!number}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-dosTime2Date"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{!Date}</span>
-					<b>dosTime2Date</b>(dostime)
+					<span class="light">{!Array.<!{filename: !string}>}</span>
+					<b>getEntries</b>()
 					
 					</div>
 					<div class="description">
@@ -994,17 +830,6 @@ ul.inheritsList
 					
 					
 						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!number}</span> <b>dostime</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
 						
 						
 						
@@ -1012,105 +837,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{!Date}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-handleCentralDirectory"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{undefined}</span>
-					<b>handleCentralDirectory</b>(data, callback)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!Uint8Array}</span> <b>data</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{!function(?string|!core.Zip)}</span> <b>callback</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{undefined}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-handleCentralDirectoryEnd"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{undefined}</span>
-					<b>handleCentralDirectoryEnd</b>(data, callback)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!Uint8Array}</span> <b>data</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{!function(?string|!core.Zip)}</span> <b>callback</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{undefined}</span> </dd>
+								<dd><span class="light fixedFont">{!Array.<!{filename: !string}>}</span> </dd>
 							
 							</dl>
 						
@@ -1149,55 +876,6 @@ ul.inheritsList
 									
 								</dt>
 								<dd>receiving err and data</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{undefined}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-loadAllEntries"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{undefined}</span>
-					<b>loadAllEntries</b>(position, callback)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!number}</span> <b>position</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{!function(?string):undefined}</span> <b>callback</b>
-									
-								</dt>
-								<dd></dd>
 							
 							</dl>
 						
@@ -1390,61 +1068,6 @@ ul.inheritsList
 							
 								<dt>
 									<span class="light fixedFont">{!{rootElementReady: function(?string|?string=|boolean=):undefined}}</span> <b>handler</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{undefined}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-read"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{undefined}</span>
-					<b>read</b>(offset, length, callback)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!number}</span> <b>offset</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{!number}</span> <b>length</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{!function(?string|?Uint8Array):undefined}</span> <b>callback</b>
 									
 								</dt>
 								<dd></dd>
@@ -1663,98 +1286,6 @@ necessary.
 						
 						
 
-					<hr />
-				
-					<a name="-writeCODEntry"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{!<a href="../symbols/core.ByteArrayWriter.html">core.ByteArrayWriter</a>}</span>
-					<b>writeCODEntry</b>(entry, offset)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!ZipEntry}</span> <b>entry</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{!number}</span> <b>offset</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{!<a href="../symbols/core.ByteArrayWriter.html">core.ByteArrayWriter</a>}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-writeEntry"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					<span class="light">{!<a href="../symbols/core.ByteArrayWriter.html">core.ByteArrayWriter</a>}</span>
-					<b>writeEntry</b>(entry)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{!ZipEntry}</span> <b>entry</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{!<a href="../symbols/core.ByteArrayWriter.html">core.ByteArrayWriter</a>}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
 					
 				
 			
@@ -1769,7 +1300,7 @@ necessary.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Apr 17 2015 17:47:25 GMT+0200 (MESZ)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jul 17 2015 15:50:25 GMT+0200 (MESZ)
 		</div>
 	</body>
 </html>

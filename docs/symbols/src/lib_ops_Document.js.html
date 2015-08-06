@@ -98,16 +98,22 @@
 <span class='line'> 91</span>  * @return {!core.PositionIterator}
 <span class='line'> 92</span>  */</span><span class="WHIT">
 <span class='line'> 93</span> </span><span class="NAME">ops.Document.prototype.createPositionIterator</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">rootNode</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 94</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
-<span class='line'> 95</span> </span><span class="NAME">ops.Document.signalCursorAdded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="STRN">"cursor/added"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 96</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
-<span class='line'> 97</span> </span><span class="NAME">ops.Document.signalCursorRemoved</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"cursor/removed"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 98</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
-<span class='line'> 99</span> </span><span class="NAME">ops.Document.signalCursorMoved</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="STRN">"cursor/moved"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="COMM">/**
+<span class='line'> 95</span>  * @param {!string} memberid
+<span class='line'> 96</span>  * @return {!boolean}
+<span class='line'> 97</span>  */</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="NAME">ops.Document.prototype.hasCursor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">memberid</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 99</span> 
 <span class='line'>100</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
-<span class='line'>101</span> </span><span class="NAME">ops.Document.signalMemberAdded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="STRN">"member/added"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="NAME">ops.Document.signalCursorAdded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="STRN">"cursor/added"</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>102</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
-<span class='line'>103</span> </span><span class="NAME">ops.Document.signalMemberUpdated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"member/updated"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="NAME">ops.Document.signalCursorRemoved</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"cursor/removed"</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>104</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
-<span class='line'>105</span> </span><span class="NAME">ops.Document.signalMemberRemoved</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"member/removed"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>106</span> </span></pre></body></html>
+<span class='line'>105</span> </span><span class="NAME">ops.Document.signalCursorMoved</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="STRN">"cursor/moved"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="NAME">ops.Document.signalMemberAdded</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="STRN">"member/added"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="NAME">ops.Document.signalMemberUpdated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"member/updated"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="COMM">/**@const*/</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="NAME">ops.Document.signalMemberRemoved</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"member/removed"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>112</span> </span></pre></body></html>

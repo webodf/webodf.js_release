@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ops.OdtDocument-RootFilter</title>
+		<title>JsDoc Reference - RootFilter</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -197,10 +197,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/core.Base64.html">core.Base64</a></li>
 	
-	<li><a href="../symbols/core.ByteArray.html">core.ByteArray</a></li>
-	
-	<li><a href="../symbols/core.ByteArrayWriter.html">core.ByteArrayWriter</a></li>
-	
 	<li><a href="../symbols/core.CSSUnits.html">core.CSSUnits</a></li>
 	
 	<li><a href="../symbols/core.Cursor.html">core.Cursor</a></li>
@@ -234,8 +230,6 @@ ul.inheritsList
 	<li><a href="../symbols/core.Utils.html">core.Utils</a></li>
 	
 	<li><a href="../symbols/core.Zip.html">core.Zip</a></li>
-	
-	<li><a href="../symbols/core.Zip-ZipEntry.html">core.Zip-ZipEntry</a></li>
 	
 	<li><a href="../symbols/createXPathSingleton-AllChildElementIterator.html">createXPathSingleton-AllChildElementIterator</a></li>
 	
@@ -455,8 +449,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ops.OdtDocument.html">ops.OdtDocument</a></li>
 	
-	<li><a href="../symbols/ops.OdtDocument-RootFilter.html">ops.OdtDocument-RootFilter</a></li>
-	
 	<li><a href="../symbols/ops.OdtStepsTranslator.html">ops.OdtStepsTranslator</a></li>
 	
 	<li><a href="../symbols/ops.OpAddAnnotation.html">ops.OpAddAnnotation</a></li>
@@ -527,6 +519,8 @@ ul.inheritsList
 	
 	<li><a href="../symbols/RhinoRuntime.html">RhinoRuntime</a></li>
 	
+	<li><a href="../symbols/RootFilter.html">RootFilter</a></li>
+	
 	<li><a href="../symbols/Runtime.html">Runtime</a></li>
 	
 	<li><a href="../symbols/webodf.html">webodf</a></li>
@@ -548,7 +542,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ops.OdtDocument-RootFilter
+				Class RootFilter
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -565,7 +559,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ops.OdtDocument-RootFilter.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class RootFilter.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -575,10 +569,10 @@ ul.inheritsList
 				</thead>
 				<tbody>
 					<tr>
-						<td class="attributes">&lt;inner&gt; &nbsp;</td>
+						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ops.OdtDocument-RootFilter.html#constructor">ops.OdtDocument-RootFilter</a></b>(anchor)
+								<b><a href="../symbols/RootFilter.html#constructor">RootFilter</a></b>(anchor, cursors, getRoot)
 							</div>
 							<div class="description">A filter that allows a position if it has the same closest
 whitelisted root as the specified 'anchor', which can be the cursor
@@ -596,7 +590,7 @@ of the given memberid, or a given node</div>
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ops.OdtDocument-RootFilter.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class RootFilter.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -609,7 +603,7 @@ of the given memberid, or a given node</div>
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ops.OdtDocument-RootFilter.html#acceptPosition">acceptPosition</a></b>(iterator)
+								<div class="fixedFont"><b><a href="../symbols/RootFilter.html#acceptPosition">acceptPosition</a></b>(iterator)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -631,8 +625,8 @@ of the given memberid, or a given node</div>
 					Class Detail
 				</div>
 				
-				<div class="fixedFont">&lt;inner&gt; 
-						<b>ops.OdtDocument-RootFilter</b>(anchor)
+				<div class="fixedFont">
+						<b>RootFilter</b>(anchor, cursors, getRoot)
 				</div>
 				
 				<div class="description">
@@ -651,6 +645,18 @@ of the given memberid, or a given node
 						
 							<dt>
 								<span class="light fixedFont">{!string|!Node}</span>  <b>anchor</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{Object.<!ops.OdtCursor>}</span>  <b>cursors</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{function(!Node):!Node}</span>  <b>getRoot</b>
 								
 							</dt>
 								<dd></dd>
@@ -731,7 +737,7 @@ of the given memberid, or a given node
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Apr 17 2015 17:47:26 GMT+0200 (MESZ)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jul 17 2015 15:50:27 GMT+0200 (MESZ)
 		</div>
 	</body>
 </html>

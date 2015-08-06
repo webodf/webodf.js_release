@@ -860,90 +860,98 @@
 <span class='line'>853</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>854</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>855</span> </span><span class="WHIT">    </span><span class="COMM">/*jslint emptyblock: false*/</span><span class="WHIT">
-<span class='line'>856</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>857</span>      * @return {!boolean}
-<span class='line'>858</span>      */</span><span class="WHIT">
-<span class='line'>859</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>860</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>861</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>862</span> 
-<span class='line'>863</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>864</span>      * @return {!gui.DirectFormattingController.SelectionInfo}
-<span class='line'>865</span>      */</span><span class="WHIT">
-<span class='line'>866</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getCachedSelectionInfo</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>867</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">selectionInfoCache.value</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>868</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>869</span> 
-<span class='line'>870</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>871</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.Document.signalCursorAdded</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onCursorEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>872</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.Document.signalCursorRemoved</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onCursorEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>873</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.Document.signalCursorMoved</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onCursorEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>874</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalParagraphStyleModified</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onParagraphStyleModified</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>875</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalParagraphChanged</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onParagraphChanged</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>876</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalOperationEnd</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">clearCursorStyle</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>877</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalProcessingBatchEnd</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">emitSelectionChanges</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>878</span> </span><span class="WHIT">        </span><span class="NAME">sessionConstraints.subscribe</span><span class="PUNC">(</span><span class="NAME">gui.CommonConstraints.EDIT.REVIEW_MODE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">forceSelectionInfoRefresh</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>879</span> </span><span class="WHIT">        </span><span class="NAME">selectionInfoCache</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">core.LazyProperty</span><span class="PUNC">(</span><span class="NAME">getSelectionInfo</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>880</span> </span><span class="WHIT">        </span><span class="COMM">// Using a function rather than calling selectionInfoCache.value() directly because Closure Compiler's generics</span><span class="WHIT">
-<span class='line'>881</span> </span><span class="WHIT">        </span><span class="COMM">// inference is quite limited and does not seem to recognise the core.LazyProperty type interface correctly</span><span class="WHIT">
-<span class='line'>882</span> </span><span class="WHIT">        </span><span class="COMM">// within the function that creates the instance. Everywhere else in this file has no issues with it though...</span><span class="WHIT">
-<span class='line'>883</span> </span><span class="WHIT">        </span><span class="NAME">lastSignalledSelectionInfo</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">getCachedSelectionInfo</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>884</span> 
-<span class='line'>885</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">directTextStylingEnabled</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>886</span> </span><span class="WHIT">            </span><span class="NAME">self.formatTextSelection</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>887</span> </span><span class="WHIT">            </span><span class="NAME">self.setBold</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>888</span> </span><span class="WHIT">            </span><span class="NAME">self.setItalic</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>889</span> </span><span class="WHIT">            </span><span class="NAME">self.setHasUnderline</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>890</span> </span><span class="WHIT">            </span><span class="NAME">self.setHasStrikethrough</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>891</span> </span><span class="WHIT">            </span><span class="NAME">self.setFontSize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>892</span> </span><span class="WHIT">            </span><span class="NAME">self.setFontName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>893</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleBold</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>894</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleItalic</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>895</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleUnderline</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>896</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleStrikethrough</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>897</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>898</span> 
-<span class='line'>899</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">directParagraphStylingEnabled</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>900</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphCenter</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>901</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphJustified</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>902</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphLeft</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>903</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphRight</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>904</span> </span><span class="WHIT">            </span><span class="NAME">self.createParagraphStyleOps</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>905</span> </span><span class="WHIT">            </span><span class="NAME">self.indent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>906</span> </span><span class="WHIT">            </span><span class="NAME">self.outdent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>907</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>908</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>909</span> 
-<span class='line'>910</span> </span><span class="WHIT">    </span><span class="NAME">init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>911</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>912</span> 
-<span class='line'>913</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.DirectFormattingController.enabledChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"enabled/changed"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>914</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.DirectFormattingController.textStylingChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"textStyling/changed"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>915</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.DirectFormattingController.paragraphStylingChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"paragraphStyling/changed"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>916</span> 
-<span class='line'>917</span> </span><span class="COMM">/**
-<span class='line'>918</span>  * @constructor
-<span class='line'>919</span>  * @struct
-<span class='line'>920</span>  */</span><span class="WHIT">
-<span class='line'>921</span> </span><span class="NAME">gui.DirectFormattingController.SelectionInfo</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>922</span> </span><span class="WHIT">    </span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>923</span> 
-<span class='line'>924</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>925</span>      * Specifies which forms of styling options are enabled for the current selection.
-<span class='line'>926</span>      * @type {!{directTextStyling: !boolean, directParagraphStyling: !boolean}}
-<span class='line'>927</span>      */</span><span class="WHIT">
-<span class='line'>928</span> </span><span class="WHIT">    </span><span class="NAME">this.enabledFeatures</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>929</span> 
-<span class='line'>930</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>931</span>      * Applied styles in the selection
-<span class='line'>932</span>      * @type {!Array.&lt;!odf.Formatting.AppliedStyle>}
-<span class='line'>933</span>      */</span><span class="WHIT">
-<span class='line'>934</span> </span><span class="WHIT">    </span><span class="NAME">this.appliedStyles</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>935</span> 
-<span class='line'>936</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>937</span>      * Style summary for the selection
-<span class='line'>938</span>      * @type {!gui.StyleSummary}
-<span class='line'>939</span>      */</span><span class="WHIT">
-<span class='line'>940</span> </span><span class="WHIT">    </span><span class="NAME">this.styleSummary</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>941</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>942</span> </span></pre></body></html>
+<span class='line'>856</span> 
+<span class='line'>857</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>858</span>      * @return {!boolean}
+<span class='line'>859</span>      */</span><span class="WHIT">
+<span class='line'>860</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>861</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>862</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>863</span> 
+<span class='line'>864</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>865</span>      * @return {!boolean}
+<span class='line'>866</span>      */</span><span class="WHIT">
+<span class='line'>867</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>868</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>869</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>870</span> 
+<span class='line'>871</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>872</span>      * @return {!gui.DirectFormattingController.SelectionInfo}
+<span class='line'>873</span>      */</span><span class="WHIT">
+<span class='line'>874</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getCachedSelectionInfo</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>875</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">selectionInfoCache.value</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>876</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>877</span> 
+<span class='line'>878</span> </span><span class="WHIT">    </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>879</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.Document.signalCursorAdded</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onCursorEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>880</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.Document.signalCursorRemoved</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onCursorEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>881</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.Document.signalCursorMoved</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onCursorEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>882</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalParagraphStyleModified</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onParagraphStyleModified</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>883</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalParagraphChanged</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">onParagraphChanged</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>884</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalOperationEnd</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">clearCursorStyle</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>885</span> </span><span class="WHIT">        </span><span class="NAME">odtDocument.subscribe</span><span class="PUNC">(</span><span class="NAME">ops.OdtDocument.signalProcessingBatchEnd</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">emitSelectionChanges</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>886</span> </span><span class="WHIT">        </span><span class="NAME">sessionConstraints.subscribe</span><span class="PUNC">(</span><span class="NAME">gui.CommonConstraints.EDIT.REVIEW_MODE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">forceSelectionInfoRefresh</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>887</span> </span><span class="WHIT">        </span><span class="NAME">selectionInfoCache</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">core.LazyProperty</span><span class="PUNC">(</span><span class="NAME">getSelectionInfo</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>888</span> </span><span class="WHIT">        </span><span class="COMM">// Using a function rather than calling selectionInfoCache.value() directly because Closure Compiler's generics</span><span class="WHIT">
+<span class='line'>889</span> </span><span class="WHIT">        </span><span class="COMM">// inference is quite limited and does not seem to recognise the core.LazyProperty type interface correctly</span><span class="WHIT">
+<span class='line'>890</span> </span><span class="WHIT">        </span><span class="COMM">// within the function that creates the instance. Everywhere else in this file has no issues with it though...</span><span class="WHIT">
+<span class='line'>891</span> </span><span class="WHIT">        </span><span class="NAME">lastSignalledSelectionInfo</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">getCachedSelectionInfo</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>892</span> 
+<span class='line'>893</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">directTextStylingEnabled</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>894</span> </span><span class="WHIT">            </span><span class="NAME">self.formatTextSelection</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>895</span> </span><span class="WHIT">            </span><span class="NAME">self.setBold</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>896</span> </span><span class="WHIT">            </span><span class="NAME">self.setItalic</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>897</span> </span><span class="WHIT">            </span><span class="NAME">self.setHasUnderline</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>898</span> </span><span class="WHIT">            </span><span class="NAME">self.setHasStrikethrough</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>899</span> </span><span class="WHIT">            </span><span class="NAME">self.setFontSize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>900</span> </span><span class="WHIT">            </span><span class="NAME">self.setFontName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>901</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleBold</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>902</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleItalic</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>903</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleUnderline</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>904</span> </span><span class="WHIT">            </span><span class="NAME">self.toggleStrikethrough</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyFalseReturningFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>905</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>906</span> 
+<span class='line'>907</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">directParagraphStylingEnabled</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>908</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphCenter</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>909</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphJustified</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>910</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphLeft</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>911</span> </span><span class="WHIT">            </span><span class="NAME">self.alignParagraphRight</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>912</span> </span><span class="WHIT">            </span><span class="NAME">self.createParagraphStyleOps</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>913</span> </span><span class="WHIT">            </span><span class="NAME">self.indent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>914</span> </span><span class="WHIT">            </span><span class="NAME">self.outdent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">emptyBoolFunction</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>915</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>916</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>917</span> 
+<span class='line'>918</span> </span><span class="WHIT">    </span><span class="NAME">init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>919</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>920</span> 
+<span class='line'>921</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.DirectFormattingController.enabledChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"enabled/changed"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>922</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.DirectFormattingController.textStylingChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"textStyling/changed"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>923</span> </span><span class="COMM">/**@const*/</span><span class="NAME">gui.DirectFormattingController.paragraphStylingChanged</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"paragraphStyling/changed"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>924</span> 
+<span class='line'>925</span> </span><span class="COMM">/**
+<span class='line'>926</span>  * @constructor
+<span class='line'>927</span>  * @struct
+<span class='line'>928</span>  */</span><span class="WHIT">
+<span class='line'>929</span> </span><span class="NAME">gui.DirectFormattingController.SelectionInfo</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>930</span> </span><span class="WHIT">    </span><span class="STRN">"use strict"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>931</span> 
+<span class='line'>932</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>933</span>      * Specifies which forms of styling options are enabled for the current selection.
+<span class='line'>934</span>      * @type {!{directTextStyling: !boolean, directParagraphStyling: !boolean}}
+<span class='line'>935</span>      */</span><span class="WHIT">
+<span class='line'>936</span> </span><span class="WHIT">    </span><span class="NAME">this.enabledFeatures</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>937</span> 
+<span class='line'>938</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>939</span>      * Applied styles in the selection
+<span class='line'>940</span>      * @type {!Array.&lt;!odf.Formatting.AppliedStyle>}
+<span class='line'>941</span>      */</span><span class="WHIT">
+<span class='line'>942</span> </span><span class="WHIT">    </span><span class="NAME">this.appliedStyles</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>943</span> 
+<span class='line'>944</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>945</span>      * Style summary for the selection
+<span class='line'>946</span>      * @type {!gui.StyleSummary}
+<span class='line'>947</span>      */</span><span class="WHIT">
+<span class='line'>948</span> </span><span class="WHIT">    </span><span class="NAME">this.styleSummary</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>949</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>950</span> </span></pre></body></html>
