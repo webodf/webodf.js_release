@@ -40,7 +40,7 @@
  @source: http://www.webodf.org/
  @source: https://github.com/kogmbh/WebODF/
 */
-var webodf_version = "0.5.8";
+var webodf_version = "0.5.9";
 function Runtime() {
 }
 Runtime.prototype.getVariable = function(name) {
@@ -2628,7 +2628,7 @@ core.Zip = function Zip(url, entriesReadCallback) {
     });
   }
   function save(filename, data, compressed, date) {
-    zip.file(filename, data, {date:date, compression:compressed ? null : "STORE"});
+    zip.file(filename, data, {date:date, compression:compressed ? "DEFLATE" : "STORE"});
   }
   function remove(filename) {
     var exists = zip.file(filename) !== null;
@@ -2637,7 +2637,7 @@ core.Zip = function Zip(url, entriesReadCallback) {
   }
   function createByteArray(successCallback, errorCallback) {
     try {
-      successCallback(zip.generate({type:"uint8array", compression:"DEFLATE"}));
+      successCallback(zip.generate({type:"uint8array", compression:"STORE"}));
     } catch (e) {
       errorCallback(e.message);
     }
@@ -2662,7 +2662,8 @@ core.Zip = function Zip(url, entriesReadCallback) {
   this.loadAsDataURL = loadAsDataURL;
   this.getEntries = function() {
     return Object.keys(zip.files).map(function(filename) {
-      return {filename:filename};
+      var e = zip.files[filename];
+      return {filename:filename, date:e.date};
     });
   };
   zip = new externs.JSZip;
